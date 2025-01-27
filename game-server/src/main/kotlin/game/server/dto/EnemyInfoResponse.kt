@@ -1,13 +1,13 @@
 package game.server.dto
 
 
-data class EnemySpawnResponse(
+data class EnemyInfoResponse(
     val enemyId: String,
-    val status: EnemyStatus,
+    val status: EnemyStatusPacket,
     val position: Position
 )
 
-data class EnemyStatus(
+data class EnemyStatusPacket(
     val name: String,
     val health: Int,
     val damage: Int,

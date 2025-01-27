@@ -1,17 +1,18 @@
 package game.server.enemy
 
-import game.server.dto.EnemyStatus
+import game.server.dto.EnemyStatusPacket
 import game.server.enemy.AttackType.MELEE
 import game.server.enemy.AttackType.RANGED
 
-enum class Enemy(
+enum class EnemyStatus(
     val displayName: String,
     val attackType: AttackType,
     val health: Int,
     val damage: Int,
     val defense: Int,
     val width: Int,
-    val height: Int
+    val height: Int,
+    val speed: Int
 ) {
 
     ZERGLING(
@@ -21,7 +22,8 @@ enum class Enemy(
         damage = 5,
         defense = 3,
         width = 10,
-        height = 10
+        height = 10,
+        speed = 3
     ),
 
     HYDRALISK(
@@ -31,9 +33,11 @@ enum class Enemy(
         damage = 10,
         defense = 3,
         width = 15,
-        height = 15
+        height = 15,
+        speed = 4
+
     )
     ;
 
-    fun toPacket() = EnemyStatus(displayName, health, damage, defense, width, height)
+    fun toPacket() = EnemyStatusPacket(displayName, health, damage, defense, width, height)
 }
