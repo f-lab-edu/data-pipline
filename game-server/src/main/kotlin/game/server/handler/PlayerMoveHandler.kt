@@ -1,12 +1,15 @@
 package game.server.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import game.server.Player
 import game.server.dto.PlayerMoveRequest
+import game.server.dto.Position
 import org.springframework.stereotype.Component
 
 @Component("move")
 class PlayerMoveHandler(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val player: Player
 ) : RequestHandler<PlayerMoveRequest> {
 
     override fun handle(request: PlayerMoveRequest): String {
@@ -15,6 +18,7 @@ class PlayerMoveHandler(
 
         val isAllowed = isMoveAllowed(newX, newY)
         return if (isAllowed) {
+            player.position = Position(newX, newY)
             objectMapper.writeValueAsString(
                 mapOf(
                     "type" to "move",
