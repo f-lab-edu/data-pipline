@@ -14,7 +14,11 @@ class GameWebSocketHandler(
     private val requestHandlerFactory: RequestHandlerFactory
 ) : WebSocketHandler {
 
+    private lateinit var currentSession: WebSocketSession
+
     override fun handle(session: WebSocketSession): Mono<Void> {
+        currentSession = session
+
         return session.send(
             session.receive()
                 .map { message ->
@@ -49,5 +53,10 @@ class GameWebSocketHandler(
                 )
             )
         }
+    }
+
+    fun sendToClient(message: Any) {
+        val jsonMessage = objectMapper.writeValueAsString(message)
+        currentSession.send(Mono.just(currentSession.textMessage(jsonMessage))).subscribe()
     }
 }
