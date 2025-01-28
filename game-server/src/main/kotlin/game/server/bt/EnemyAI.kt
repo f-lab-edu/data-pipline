@@ -63,8 +63,6 @@ class EnemyAI(private val enemy: Enemy, private val player: Player) {
         val newX = (enemy.position.x + cos(angle) * speed).toInt()
         val newY = (enemy.position.y + sin(angle) * speed).toInt()
 
-        println("Enemy ${enemy.id} moving from (${enemy.position.x}, ${enemy.position.y}) to ($newX, $newY)")
-
         enemy.position = Position(newX, newY)
         return true
     }
