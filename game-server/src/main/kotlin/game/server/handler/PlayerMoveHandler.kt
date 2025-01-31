@@ -10,9 +10,7 @@ import game.server.dto.response.Success
 import org.springframework.stereotype.Component
 
 @Component("move")
-class PlayerMoveHandler(
-    private val objectMapper: ObjectMapper
-) : RequestHandler<PlayerMoveRequest> {
+class PlayerMoveHandler : RequestHandler<PlayerMoveRequest> {
 
     override fun handle(request: PlayerMoveRequest): ApiResponse {
         val (currentX, currentY) = request.currentPosition

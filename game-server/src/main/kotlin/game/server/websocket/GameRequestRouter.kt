@@ -10,7 +10,7 @@ import org.springframework.web.reactive.socket.WebSocketSession
 import reactor.core.publisher.Mono
 
 @Component
-class GameWebSocketHandler(
+class GameRequestRouter(
     private val objectMapper: ObjectMapper,
     private val requestHandlerFactory: RequestHandlerFactory
 ) : WebSocketHandler {
