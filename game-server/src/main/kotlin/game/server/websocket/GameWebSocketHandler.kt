@@ -2,6 +2,7 @@ package game.server.websocket
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import game.server.dto.PlayerMoveRequest
+import game.server.dto.response.Error
 import game.server.handler.RequestHandlerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketHandler
@@ -31,7 +32,7 @@ class GameWebSocketHandler(
             val type = requestMap["type"] as? String ?: throw IllegalArgumentException("Missing type")
             val data = requestMap["data"] ?: throw IllegalArgumentException("Missing data")
 
-            when (type) {
+            val apiResponse = when (type) {
                 "move" -> {
                     val request = objectMapper.convertValue(data, PlayerMoveRequest::class.java)
                     requestHandlerFactory.getHandler<PlayerMoveRequest>("move").handle(request)
@@ -40,13 +41,10 @@ class GameWebSocketHandler(
                     throw IllegalArgumentException("Unknown request type: $type")
                 }
             }
+            objectMapper.writeValueAsString(apiResponse)
         } catch (e: Exception) {
             e.printStackTrace()
-            objectMapper.writeValueAsString(
-                mapOf(
-                    "type" to "error",
-                    "message" to e.message
-                )
+            objectMapper.writeValueAsString(Error(type = "error", message = e.message ?: "Unknown error")
             )
         }
     }

@@ -2,6 +2,11 @@ package game.server.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import game.server.dto.PlayerMoveRequest
+import game.server.dto.Position
+import game.server.dto.response.ApiResponse
+import game.server.dto.response.Error
+import game.server.dto.response.MoveResponseData
+import game.server.dto.response.Success
 import org.springframework.stereotype.Component
 
 @Component("move")
@@ -9,26 +14,20 @@ class PlayerMoveHandler(
     private val objectMapper: ObjectMapper
 ) : RequestHandler<PlayerMoveRequest> {
 
-    override fun handle(request: PlayerMoveRequest): String {
+    override fun handle(request: PlayerMoveRequest): ApiResponse {
         val (currentX, currentY) = request.currentPosition
         val (newX, newY) = calculateNewPosition(currentX, currentY, request.direction, request.speed)
 
         val isAllowed = isMoveAllowed(newX, newY)
         return if (isAllowed) {
-            objectMapper.writeValueAsString(
-                mapOf(
-                    "type" to "move",
-                    "success" to true,
-                    "newPosition" to mapOf("x" to newX, "y" to newY)
-                )
+            Success(
+                type = "move",
+                data = MoveResponseData(Position(newX, newY))
             )
         } else {
-            objectMapper.writeValueAsString(
-                mapOf(
-                    "type" to "move",
-                    "success" to false,
-                    "message" to "Move not allowed"
-                )
+            Error(
+                type = "move",
+                message = "Move is not allowed"
             )
         }
     }
