@@ -4,6 +4,6 @@ import game.server.domain.Position
 
 data class PlayerMoveRequest(
     val currentPosition: Position,
-    val direction: String,
+    val direction: Direction,
     val speed: Int
 ) : Request
