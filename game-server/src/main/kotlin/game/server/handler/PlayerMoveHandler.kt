@@ -1,8 +1,8 @@
 package game.server.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import game.server.domain.Position
 import game.server.dto.PlayerMoveRequest
-import game.server.dto.Position
 import game.server.dto.response.ApiResponse
 import game.server.dto.response.Error
 import game.server.dto.response.MoveResponseData
@@ -32,13 +32,13 @@ class PlayerMoveHandler(
         }
     }
 
-    private fun calculateNewPosition(x: Int, y: Int, direction: String, speed: Int): Pair<Int, Int> {
+    private fun calculateNewPosition(x: Int, y: Int, direction: String, speed: Int): Position {
         return when (direction) {
-            "UP" -> Pair(x, y - speed)
-            "DOWN" -> Pair(x, y + speed)
-            "LEFT" -> Pair(x - speed, y)
-            "RIGHT" -> Pair(x + speed, y)
-            else -> Pair(x, y)
+            "UP" -> Position(x, y - speed)
+            "DOWN" -> Position(x, y + speed)
+            "LEFT" -> Position(x - speed, y)
+            "RIGHT" -> Position(x + speed, y)
+            else -> Position(x, y)
         }
     }
 
