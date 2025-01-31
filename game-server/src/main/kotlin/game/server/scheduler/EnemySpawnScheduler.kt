@@ -1,7 +1,7 @@
 package game.server.scheduler
 
-import game.server.CANVAS_HEIGHT
-import game.server.CANVAS_WIDTH
+import game.server.handler.CANVAS_HEIGHT
+import game.server.handler.CANVAS_WIDTH
 import game.server.dto.Position
 import game.server.enemy.Enemy
 import game.server.enemy.EnemyManager

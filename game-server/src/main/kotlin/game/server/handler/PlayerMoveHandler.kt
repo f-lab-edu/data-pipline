@@ -6,6 +6,9 @@ import game.server.dto.PlayerMoveRequest
 import game.server.dto.Position
 import org.springframework.stereotype.Component
 
+const val CANVAS_WIDTH = 800
+const val CANVAS_HEIGHT = 600
+
 @Component("move")
 class PlayerMoveHandler(
     private val objectMapper: ObjectMapper,
@@ -48,8 +51,6 @@ class PlayerMoveHandler(
     }
 
     private fun isMoveAllowed(x: Int, y: Int): Boolean {
-        val mapWidth = 800
-        val mapHeight = 600
-        return x in 0 until mapWidth && y in 0 until mapHeight
+        return x in 0 until CANVAS_WIDTH && y in 0 until CANVAS_HEIGHT
     }
 }
