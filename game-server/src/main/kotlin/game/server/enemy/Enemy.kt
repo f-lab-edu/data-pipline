@@ -1,7 +1,6 @@
 package game.server.enemy
 
 import game.server.Player
-import game.server.bt.EnemyAI
 import game.server.dto.EnemyInfoResponse
 import game.server.dto.Position
 
