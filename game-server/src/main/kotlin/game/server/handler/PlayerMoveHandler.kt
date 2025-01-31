@@ -1,7 +1,9 @@
 package game.server.handler
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import game.server.Player
 import game.server.domain.Position
+import game.server.dto.Direction
+import game.server.dto.Direction.*
 import game.server.dto.PlayerMoveRequest
 import game.server.dto.response.ApiResponse
 import game.server.dto.response.Error
@@ -9,8 +11,13 @@ import game.server.dto.response.MoveResponseData
 import game.server.dto.response.Success
 import org.springframework.stereotype.Component
 
+const val CANVAS_WIDTH = 800
+const val CANVAS_HEIGHT = 600
+
 @Component("move")
-class PlayerMoveHandler : RequestHandler<PlayerMoveRequest> {
+class PlayerMoveHandler(
+    private val player: Player
+) : RequestHandler<PlayerMoveRequest> {
 
     override fun handle(request: PlayerMoveRequest): ApiResponse {
         val (currentX, currentY) = request.currentPosition
@@ -18,6 +25,7 @@ class PlayerMoveHandler : RequestHandler<PlayerMoveRequest> {
 
         val isAllowed = isMoveAllowed(newX, newY)
         return if (isAllowed) {
+            player.position = Position(newX, newY)
             Success(
                 type = "move",
                 data = MoveResponseData(Position(newX, newY))
@@ -30,19 +38,16 @@ class PlayerMoveHandler : RequestHandler<PlayerMoveRequest> {
         }
     }
 
-    private fun calculateNewPosition(x: Int, y: Int, direction: String, speed: Int): Position {
+    private fun calculateNewPosition(x: Int, y: Int, direction: Direction, speed: Int): Position {
         return when (direction) {
-            "UP" -> Position(x, y - speed)
-            "DOWN" -> Position(x, y + speed)
-            "LEFT" -> Position(x - speed, y)
-            "RIGHT" -> Position(x + speed, y)
-            else -> Position(x, y)
+            UP -> Position(x, y - speed)
+            DOWN -> Position(x, y + speed)
+            LEFT -> Position(x - speed, y)
+            RIGHT -> Position(x + speed, y)
         }
     }
 
     private fun isMoveAllowed(x: Int, y: Int): Boolean {
-        val mapWidth = 800
-        val mapHeight = 600
-        return x in 0 until mapWidth && y in 0 until mapHeight
+        return x in 0 until CANVAS_WIDTH && y in 0 until CANVAS_HEIGHT
     }
 }

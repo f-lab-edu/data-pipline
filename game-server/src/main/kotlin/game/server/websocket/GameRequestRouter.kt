@@ -15,7 +15,11 @@ class GameRequestRouter(
     private val requestHandlerFactory: RequestHandlerFactory
 ) : WebSocketHandler {
 
+    private lateinit var currentSession: WebSocketSession
+
     override fun handle(session: WebSocketSession): Mono<Void> {
+        currentSession = session
+
         return session.send(
             session.receive()
                 .map { message ->
@@ -47,5 +51,10 @@ class GameRequestRouter(
             objectMapper.writeValueAsString(Error(type = "error", message = e.message ?: "Unknown error")
             )
         }
+    }
+
+    fun sendToClient(message: Any) {
+        val jsonMessage = objectMapper.writeValueAsString(message)
+        currentSession.send(Mono.just(currentSession.textMessage(jsonMessage))).subscribe()
     }
 }

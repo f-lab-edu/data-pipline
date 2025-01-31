@@ -1,6 +1,6 @@
 package game.server.dto.response
 
-import game.server.dto.Position
+import game.server.domain.Position
 
 data class MoveResponseData(
     val newPosition: Position
