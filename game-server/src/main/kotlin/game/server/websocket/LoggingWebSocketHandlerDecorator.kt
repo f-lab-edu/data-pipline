@@ -12,12 +12,12 @@ import reactor.core.publisher.Mono
 
 @Component
 class LoggingWebSocketHandlerDecorator(
-    private val gameWebSocketHandler: WebSocketHandler,
+    private val gameRequestRouter: GameRequestRouter,
     private val objectMapper: ObjectMapper
 ) : WebSocketHandler {
 
     override fun handle(session: WebSocketSession): Mono<Void> {
-        return gameWebSocketHandler.handle(LoggableWebSocketSession(session, objectMapper))
+        return gameRequestRouter.handle(LoggableWebSocketSession(session, objectMapper))
     }
 
     private class LoggableWebSocketSession(

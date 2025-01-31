@@ -1,9 +1,8 @@
-package game.server.bt
+package game.server.enemy
 
 import game.server.Player
-import game.server.dto.Position
-import game.server.enemy.AttackType
-import game.server.enemy.Enemy
+import game.server.bt.*
+import game.server.domain.Position
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin

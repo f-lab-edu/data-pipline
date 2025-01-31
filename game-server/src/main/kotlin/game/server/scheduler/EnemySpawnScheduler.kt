@@ -1,12 +1,12 @@
 package game.server.scheduler
 
-import game.server.CANVAS_HEIGHT
-import game.server.CANVAS_WIDTH
-import game.server.dto.Position
+import game.server.domain.Position
+import game.server.handler.CANVAS_HEIGHT
+import game.server.handler.CANVAS_WIDTH
 import game.server.enemy.Enemy
 import game.server.enemy.EnemyManager
 import game.server.enemy.EnemyStatus
-import game.server.websocket.GameWebSocketHandler
+import game.server.websocket.GameRequestRouter
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.lang.Math.*
@@ -18,7 +18,7 @@ import kotlin.random.Random
 
 @Component
 class EnemySpawnScheduler(
-    private val webSocketHandler: GameWebSocketHandler,
+    private val gameRequestRouter: GameRequestRouter,
     private val enemyManager: EnemyManager
 ) {
     private val center = Position(400, 300)
@@ -41,7 +41,7 @@ class EnemySpawnScheduler(
             "round" to round
         )
         round++
-        webSocketHandler.sendToClient(message)
+        gameRequestRouter.sendToClient(message)
     }
 
     private fun createRandomEnemy(center: Position, radius: Int, minDistance: Int = 270): Enemy {

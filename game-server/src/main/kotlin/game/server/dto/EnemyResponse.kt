@@ -1,5 +1,7 @@
 package game.server.dto
 
+import game.server.domain.Position
+
 
 data class EnemyInfoResponse(
     val enemyId: String,

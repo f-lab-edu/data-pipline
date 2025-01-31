@@ -1,13 +1,9 @@
 package game.server.dto
 
+import game.server.domain.Position
+
 data class PlayerMoveRequest(
     val currentPosition: Position,
-    val direction: String,
+    val direction: Direction,
     val speed: Int
 ) : Request
-
-
-data class Position(
-    val x: Int,
-    val y: Int
-)
