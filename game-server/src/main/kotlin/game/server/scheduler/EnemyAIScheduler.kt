@@ -1,14 +1,14 @@
 package game.server.scheduler
 
 import game.server.enemy.EnemyManager
-import game.server.websocket.GameWebSocketHandler
+import game.server.websocket.GameRequestRouter
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 
 @Component
 class EnemyAIScheduler(
-    private val webSocketHandler: GameWebSocketHandler,
+    private val router: GameRequestRouter,
     private val enemyManager: EnemyManager,
 ) {
 
@@ -25,6 +25,6 @@ class EnemyAIScheduler(
             "type" to "enemy_positions",
             "data" to enemyPackets
         )
-        webSocketHandler.sendToClient(message)
+        router.sendToClient(message)
     }
 }

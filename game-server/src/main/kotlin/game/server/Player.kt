@@ -1,6 +1,6 @@
 package game.server
 
-import game.server.dto.Position
+import game.server.domain.Position
 import org.springframework.stereotype.Component
 
 
