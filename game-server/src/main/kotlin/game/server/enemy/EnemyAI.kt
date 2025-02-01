@@ -2,7 +2,7 @@ package game.server.enemy
 
 import game.server.Player
 import game.server.bt.*
-import game.server.dto.Position
+import game.server.domain.Position
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -61,8 +61,6 @@ class EnemyAI(private val enemy: Enemy, private val player: Player) {
         val speed = enemy.speed
         val newX = (enemy.position.x + cos(angle) * speed).toInt()
         val newY = (enemy.position.y + sin(angle) * speed).toInt()
-
-        println("Enemy ${enemy.id} moving from (${enemy.position.x}, ${enemy.position.y}) to ($newX, $newY)")
 
         enemy.position = Position(newX, newY)
         return true

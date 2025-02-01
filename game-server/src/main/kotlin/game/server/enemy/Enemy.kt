@@ -1,8 +1,8 @@
 package game.server.enemy
 
 import game.server.Player
+import game.server.domain.Position
 import game.server.dto.EnemyInfoResponse
-import game.server.dto.Position
 
 data class Enemy(
     val id: String,
