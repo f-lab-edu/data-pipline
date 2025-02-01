@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
-class LoggingWebSocketHandlerDecorator(
+class LoggingRouterDecorator(
     private val gameRequestRouter: GameRequestRouter,
     private val objectMapper: ObjectMapper
 ) : WebSocketHandler {
