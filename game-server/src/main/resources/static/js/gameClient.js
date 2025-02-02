@@ -1,5 +1,5 @@
 // WebSocket 초기화
-const socket = new WebSocket("ws://공인IP:8080/ws/game");
+const socket = new WebSocket("ws://localhost:8080/ws/game");
 
 const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
@@ -53,7 +53,7 @@ function handleServerMessage(response) {
         console.log(`라운드 ${round}: 적 ${enemies.length}명 생성됨.`);
     } else if (response.type === "move") {
         if (response.success) {
-            const { x, y } = response.newPosition;
+            const { x, y } = response.data.newPosition;
             player.x = x;
             player.y = y;
         } else {
