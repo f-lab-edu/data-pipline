@@ -1,5 +1,6 @@
 package game.server.handler
 
+import com.fasterxml.jackson.core.type.TypeReference
 import game.server.Player
 import game.server.domain.Position
 import game.server.dto.Direction
@@ -19,6 +20,9 @@ const val CANVAS_HEIGHT = 600
 class PlayerMoveHandler(
     private val player: Player
 ) : RequestHandler<Request<PlayerMoveRequestData>, MoveResponseData> {
+
+    override val requestTypeReference: TypeReference<Request<PlayerMoveRequestData>> =
+        object : TypeReference<Request<PlayerMoveRequestData>>() {}
 
     override fun handle(request: Request<PlayerMoveRequestData>): ApiResponse<MoveResponseData> {
         val (currentX, currentY) = request.data.currentPosition

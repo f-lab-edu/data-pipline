@@ -2,6 +2,7 @@ package game.server.websocket
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import game.server.dto.request.ApiRequest
 import game.server.dto.request.PlayerMoveRequestData
 import game.server.dto.request.Request
 import game.server.dto.response.ApiResponse
@@ -41,17 +42,11 @@ class GameRequestRouter(
             val requestMap: Map<String, Any> = objectMapper.readValue(payload, Map::class.java) as Map<String, Any>
             val type = requestMap["type"] as? String ?: throw IllegalArgumentException("Missing 'type' field in request")
 
-            val apiResponse = when (type) {
-                "move" -> {
-                    val request: Request<PlayerMoveRequestData> =
-                        objectMapper.convertValue(requestMap, object : TypeReference<Request<PlayerMoveRequestData>>() {})
-                    logger.info("request: {}", request)
-                    requestHandlerFactory.getHandler<Request<PlayerMoveRequestData>, MoveResponseData>(request.type).handle(request)
-                }
-                else -> {
-                    throw IllegalArgumentException("Unknown request type: $type")
-                }
-            }
+            val handler = requestHandlerFactory.getHandler<Request<*>, ApiRequest<*>>(type)
+            val request: Request<*> = objectMapper.convertValue(requestMap, handler.requestTypeReference) as Request<*>
+            logger.info("request: {}", request)
+
+            val apiResponse = handler.handle(request)
             objectMapper.writeValueAsString(apiResponse)
         } catch (e: Exception) {
             e.printStackTrace()
