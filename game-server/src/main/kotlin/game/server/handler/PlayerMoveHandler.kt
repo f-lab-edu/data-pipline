@@ -6,9 +6,9 @@ import game.server.dto.Direction
 import game.server.dto.Direction.*
 import game.server.dto.PlayerMoveRequest
 import game.server.dto.response.ApiResponse
-import game.server.dto.response.Error
+import game.server.dto.response.ErrorResponse
 import game.server.dto.response.MoveResponseData
-import game.server.dto.response.Success
+import game.server.dto.response.Response
 import org.springframework.stereotype.Component
 
 const val CANVAS_WIDTH = 800
@@ -17,21 +17,21 @@ const val CANVAS_HEIGHT = 600
 @Component("move")
 class PlayerMoveHandler(
     private val player: Player
-) : RequestHandler<PlayerMoveRequest> {
+) : RequestHandler<PlayerMoveRequest, MoveResponseData> {
 
-    override fun handle(request: PlayerMoveRequest): ApiResponse {
+    override fun handle(request: PlayerMoveRequest): ApiResponse<MoveResponseData> {
         val (currentX, currentY) = request.currentPosition
         val (newX, newY) = calculateNewPosition(currentX, currentY, request.direction, request.speed)
 
         val isAllowed = isMoveAllowed(newX, newY)
         return if (isAllowed) {
             player.position = Position(newX, newY)
-            Success(
+            Response(
                 type = "move",
                 data = MoveResponseData(Position(newX, newY))
             )
         } else {
-            Error(
+            ErrorResponse(
                 type = "move",
                 message = "Move is not allowed"
             )

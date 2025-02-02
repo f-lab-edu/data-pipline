@@ -1,5 +1,6 @@
 package game.server.scheduler
 
+import game.server.dto.response.Response
 import game.server.enemy.EnemyManager
 import game.server.websocket.GameRequestRouter
 import org.springframework.scheduling.annotation.Scheduled
@@ -21,10 +22,7 @@ class EnemyAIScheduler(
     private fun notifyClients() {
         val enemyPackets = enemyManager.getAllEnemies().map { it.toPacket() }
 
-        val message = mapOf(
-            "type" to "enemy_positions",
-            "data" to enemyPackets
-        )
-        router.sendToClient(message)
+        val response = Response(type = "enemy_positions", data = enemyPackets)
+        router.sendToClient(response)
     }
 }

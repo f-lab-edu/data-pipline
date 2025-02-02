@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class RequestHandlerFactory(
-    private val handlers: Map<String, RequestHandler<*>>
+    private val handlers: Map<String, RequestHandler<*, *>>
 ) {
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : Request> getHandler(type: String): RequestHandler<T> {
-        return handlers[type] as? RequestHandler<T>
+    fun <T : Request, R> getHandler(type: String): RequestHandler<T, R> {
+        return handlers[type] as? RequestHandler<T, R>
             ?: throw IllegalArgumentException("Unknown request type: $type")
     }
 }

@@ -1,6 +1,7 @@
 package game.server.scheduler
 
 import game.server.domain.Position
+import game.server.dto.response.Response
 import game.server.handler.CANVAS_HEIGHT
 import game.server.handler.CANVAS_WIDTH
 import game.server.enemy.Enemy
@@ -35,13 +36,9 @@ class EnemySpawnScheduler(
             createRandomEnemy(center, radius).toPacket()
         }
 
-        val message = mapOf(
-            "type" to "enemy_spawn",
-            "data" to enemies,
-            "round" to round
-        )
+        val response = Response(type = "enemy_spawn", data = enemies)
         round++
-        gameRequestRouter.sendToClient(message)
+        gameRequestRouter.sendToClient(response)
     }
 
     private fun createRandomEnemy(center: Position, radius: Int, minDistance: Int = 270): Enemy {
