@@ -12,6 +12,8 @@ dependencies {
     // Serialize kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
     }
