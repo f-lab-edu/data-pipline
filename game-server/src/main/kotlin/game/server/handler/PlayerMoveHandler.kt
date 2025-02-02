@@ -4,7 +4,8 @@ import game.server.Player
 import game.server.domain.Position
 import game.server.dto.Direction
 import game.server.dto.Direction.*
-import game.server.dto.PlayerMoveRequest
+import game.server.dto.request.PlayerMoveRequestData
+import game.server.dto.request.Request
 import game.server.dto.response.ApiResponse
 import game.server.dto.response.ErrorResponse
 import game.server.dto.response.MoveResponseData
@@ -17,11 +18,11 @@ const val CANVAS_HEIGHT = 600
 @Component("move")
 class PlayerMoveHandler(
     private val player: Player
-) : RequestHandler<PlayerMoveRequest, MoveResponseData> {
+) : RequestHandler<Request<PlayerMoveRequestData>, MoveResponseData> {
 
-    override fun handle(request: PlayerMoveRequest): ApiResponse<MoveResponseData> {
-        val (currentX, currentY) = request.currentPosition
-        val (newX, newY) = calculateNewPosition(currentX, currentY, request.direction, request.speed)
+    override fun handle(request: Request<PlayerMoveRequestData>): ApiResponse<MoveResponseData> {
+        val (currentX, currentY) = request.data.currentPosition
+        val (newX, newY) = calculateNewPosition(currentX, currentY, request.data.direction, request.data.speed)
 
         val isAllowed = isMoveAllowed(newX, newY)
         return if (isAllowed) {
