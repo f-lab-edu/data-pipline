@@ -1,7 +1,12 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-alpine
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
+COPY build/libs/app.jar /app/app.jar
 
-COPY build/libs/game-server-1.0.0.jar /app/app.jar
+RUN chown -R appuser:appgroup /app
 
-CMD ["java", "-jar", "/app/app.jar"]
+USER appuser
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
