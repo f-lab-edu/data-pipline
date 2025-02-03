@@ -19,7 +19,7 @@ const val CANVAS_HEIGHT = 600
 @Component("move")
 class PlayerMoveHandler(
     private val player: Player
-) : RequestHandler<Request<PlayerMoveRequestData>, MoveResponseData> {
+) : RequestHandler<PlayerMoveRequestData, MoveResponseData> {
 
     override val requestTypeReference: TypeReference<Request<PlayerMoveRequestData>> =
         object : TypeReference<Request<PlayerMoveRequestData>>() {}
