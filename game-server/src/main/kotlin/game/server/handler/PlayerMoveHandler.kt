@@ -28,7 +28,7 @@ class PlayerMoveHandler(
         val (currentX, currentY) = request.data.currentPosition
         val (newX, newY) = calculateNewPosition(currentX, currentY, request.data.direction, request.data.speed)
 
-        val isAllowed = isMoveAllowed(newX, newY)
+        val isAllowed = player.isMoveAllowed(newX, newY)
         return if (isAllowed) {
             player.position = Position(newX, newY)
             Response(
@@ -50,9 +50,5 @@ class PlayerMoveHandler(
             LEFT -> Position(x - speed, y)
             RIGHT -> Position(x + speed, y)
         }
-    }
-
-    private fun isMoveAllowed(x: Int, y: Int): Boolean {
-        return x in 0 until CANVAS_WIDTH && y in 0 until CANVAS_HEIGHT
     }
 }
