@@ -1,6 +1,6 @@
 package game.server.config
 
-import game.server.websocket.GameWebSocketHandler
+import game.server.websocket.GameRequestRouter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.config.WebFluxConfigurer
@@ -11,10 +11,10 @@ import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAd
 open class WebSocketConfig : WebFluxConfigurer {
 
     @Bean
-    open fun webSocketHandlerMapping(gameWebSocketHandler: GameWebSocketHandler): SimpleUrlHandlerMapping {
+    open fun webSocketHandlerMapping(gameRequestRouter: GameRequestRouter): SimpleUrlHandlerMapping {
         return SimpleUrlHandlerMapping()
             .apply {
-                urlMap = mapOf("/ws/game" to gameWebSocketHandler)
+                urlMap = mapOf("/ws/game" to gameRequestRouter)
                 order = 0
             }
     }
