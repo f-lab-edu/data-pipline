@@ -1,9 +1,11 @@
 package game.server.websocket
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import game.server.dto.PlayerMoveRequest
-import game.server.dto.response.Error
+import game.server.dto.request.Request
+import game.server.dto.response.ApiResponse
+import game.server.dto.response.ErrorResponse
 import game.server.handler.RequestHandlerFactory
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketSession
@@ -15,7 +17,12 @@ class GameRequestRouter(
     private val requestHandlerFactory: RequestHandlerFactory
 ) : WebSocketHandler {
 
+    private val logger = LoggerFactory.getLogger(GameRequestRouter::class.java)
+    private lateinit var currentSession: WebSocketSession
+
     override fun handle(session: WebSocketSession): Mono<Void> {
+        currentSession = session
+
         return session.send(
             session.receive()
                 .map { message ->
@@ -29,23 +36,23 @@ class GameRequestRouter(
     private fun processRequest(payload: String): String {
         return try {
             val requestMap: Map<String, Any> = objectMapper.readValue(payload, Map::class.java) as Map<String, Any>
-            val type = requestMap["type"] as? String ?: throw IllegalArgumentException("Missing type")
-            val data = requestMap["data"] ?: throw IllegalArgumentException("Missing data")
+            val type = requestMap["type"] as? String ?: throw IllegalArgumentException("Missing 'type' field in request")
 
-            val apiResponse = when (type) {
-                "move" -> {
-                    val request = objectMapper.convertValue(data, PlayerMoveRequest::class.java)
-                    requestHandlerFactory.getHandler<PlayerMoveRequest>("move").handle(request)
-                }
-                else -> {
-                    throw IllegalArgumentException("Unknown request type: $type")
-                }
-            }
+            val handler = requestHandlerFactory.getHandler<Any, Any>(type)
+            val request = objectMapper.convertValue(requestMap, handler.requestTypeReference) as Request<Any>
+            logger.info("request: {}", request)
+
+            val apiResponse = handler.handle(request)
             objectMapper.writeValueAsString(apiResponse)
         } catch (e: Exception) {
             e.printStackTrace()
-            objectMapper.writeValueAsString(Error(type = "error", message = e.message ?: "Unknown error")
-            )
+            objectMapper.writeValueAsString(ErrorResponse<Nothing>(type = "error", message = e.message ?: "Unknown error"))
         }
+    }
+
+    fun <T> sendToClient(message: ApiResponse<T>) {
+        logger.info("response: {}", message)
+        val jsonMessage = objectMapper.writeValueAsString(message)
+        currentSession.send(Mono.just(currentSession.textMessage(jsonMessage))).subscribe()
     }
 }

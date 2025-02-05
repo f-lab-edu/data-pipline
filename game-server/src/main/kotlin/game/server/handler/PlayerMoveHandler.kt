@@ -1,48 +1,54 @@
 package game.server.handler
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.core.type.TypeReference
+import game.server.Player
 import game.server.domain.Position
-import game.server.dto.PlayerMoveRequest
+import game.server.dto.Direction
+import game.server.dto.Direction.*
+import game.server.dto.request.PlayerMoveRequestData
+import game.server.dto.request.Request
 import game.server.dto.response.ApiResponse
-import game.server.dto.response.Error
+import game.server.dto.response.ErrorResponse
 import game.server.dto.response.MoveResponseData
-import game.server.dto.response.Success
+import game.server.dto.response.Response
 import org.springframework.stereotype.Component
 
+const val CANVAS_WIDTH = 800
+const val CANVAS_HEIGHT = 600
+
 @Component("move")
-class PlayerMoveHandler : RequestHandler<PlayerMoveRequest> {
+class PlayerMoveHandler(
+    private val player: Player
+) : RequestHandler<PlayerMoveRequestData, MoveResponseData> {
 
-    override fun handle(request: PlayerMoveRequest): ApiResponse {
-        val (currentX, currentY) = request.currentPosition
-        val (newX, newY) = calculateNewPosition(currentX, currentY, request.direction, request.speed)
+    override val requestTypeReference: TypeReference<Request<PlayerMoveRequestData>> =
+        object : TypeReference<Request<PlayerMoveRequestData>>() {}
 
-        val isAllowed = isMoveAllowed(newX, newY)
+    override fun handle(request: Request<PlayerMoveRequestData>): ApiResponse<MoveResponseData> {
+        val (currentX, currentY) = request.data.currentPosition
+        val (newX, newY) = calculateNewPosition(currentX, currentY, request.data.direction, request.data.speed)
+
+        val isAllowed = player.isMoveAllowed(newX, newY)
         return if (isAllowed) {
-            Success(
+            player.position = Position(newX, newY)
+            Response(
                 type = "move",
                 data = MoveResponseData(Position(newX, newY))
             )
         } else {
-            Error(
+            ErrorResponse(
                 type = "move",
                 message = "Move is not allowed"
             )
         }
     }
 
-    private fun calculateNewPosition(x: Int, y: Int, direction: String, speed: Int): Position {
+    private fun calculateNewPosition(x: Int, y: Int, direction: Direction, speed: Int): Position {
         return when (direction) {
-            "UP" -> Position(x, y - speed)
-            "DOWN" -> Position(x, y + speed)
-            "LEFT" -> Position(x - speed, y)
-            "RIGHT" -> Position(x + speed, y)
-            else -> Position(x, y)
+            UP -> Position(x, y - speed)
+            DOWN -> Position(x, y + speed)
+            LEFT -> Position(x - speed, y)
+            RIGHT -> Position(x + speed, y)
         }
-    }
-
-    private fun isMoveAllowed(x: Int, y: Int): Boolean {
-        val mapWidth = 800
-        val mapHeight = 600
-        return x in 0 until mapWidth && y in 0 until mapHeight
     }
 }
