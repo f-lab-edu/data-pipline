@@ -1,6 +1,8 @@
 package game.server
 
-import game.server.dto.Position
+import game.server.domain.Position
+import game.server.handler.CANVAS_HEIGHT
+import game.server.handler.CANVAS_WIDTH
 import org.springframework.stereotype.Component
 
 
@@ -11,4 +13,7 @@ class Player(
     val speed: Int = 5
 ) {
     var position = Position(400, 300)
+
+    fun isMoveAllowed(x: Int, y: Int) =
+        x in 0 until CANVAS_WIDTH && y in 0 until CANVAS_HEIGHT
 }
