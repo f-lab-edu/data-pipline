@@ -1,2 +1,4 @@
-# data-pipline
-게임 내 데이터 수집 및 분석을 위한 프로젝트
+
+# ⚙️ System Architecture
+
+<img src="https://github.com/user-attachments/assets/50cb9079-1d93-4cbd-b9d1-2d47d30e2718"  width="900" height="800"/>
