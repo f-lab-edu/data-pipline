@@ -4,4 +4,4 @@ plugins {
 rootProject.name = "data-pipeline"
 
 include("game-server")
-include("logging-server")
+include("pipeline")
