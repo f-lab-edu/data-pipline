@@ -5,7 +5,7 @@ import game.server.dto.response.Response
 import game.server.game.handler.CANVAS_HEIGHT
 import game.server.game.handler.CANVAS_WIDTH
 import game.server.game.domain.monster.Monster
-import game.server.game.domain.EnemyManager
+import game.server.game.domain.MonsterManager
 import game.server.game.domain.monster.MonsterStatus
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -17,15 +17,15 @@ import kotlin.random.Random
 
 
 @Component
-class EnemySpawnScheduler(
-    private val enemyManager: EnemyManager
+class MonsterSpawnScheduler(
+    private val monsterManager: MonsterManager
 ) {
     private val center = Position(400, 300)
     private var round = 1
 
     @Scheduled(initialDelay = 10000, fixedRate = 60000)
     fun spawnEnemies() {
-        enemyManager.enemyClear()
+        monsterManager.enemyClear()
 
         val radius = (CANVAS_WIDTH.coerceAtMost(CANVAS_HEIGHT) / 2)
         val enemyCount = 5 * round
@@ -52,7 +52,7 @@ class EnemySpawnScheduler(
             position = Position(x, y),
             monsterStatus = randomMonsterStatus
         ).also {
-            enemyManager.addEnemy(it)
+            monsterManager.addEnemy(it)
         }
     }
 }
