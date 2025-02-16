@@ -1,7 +1,7 @@
 package game.server.game.domain.monster
 
 import game.server.game.domain.player.Player
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 import game.server.dto.EnemyInfoResponse
 import game.server.game.domain.monster.ai.MonsterAI
 

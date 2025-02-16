@@ -1,4 +1,4 @@
-package game.server.config
+package game.server.core.config
 
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.fasterxml.jackson.core.JsonGenerator

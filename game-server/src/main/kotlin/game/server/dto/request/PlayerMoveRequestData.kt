@@ -1,6 +1,6 @@
 package game.server.dto.request
 
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 import game.server.dto.Direction
 
 data class PlayerMoveRequestData(

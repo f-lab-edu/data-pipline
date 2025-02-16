@@ -1,6 +1,6 @@
 package game.server.game.scheduler
 
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 import game.server.dto.response.Response
 import game.server.game.handler.CANVAS_HEIGHT
 import game.server.game.handler.CANVAS_WIDTH
@@ -31,14 +31,14 @@ class MonsterSpawnScheduler(
         val enemyCount = 5 * round
 
         val enemies = (1..enemyCount).map {
-            createRandomEnemy(center, radius).toPacket()
+            createRandomMonster(center, radius).toPacket()
         }
 
         val response = Response(type = "enemy_spawn", data = enemies)
         round++
     }
 
-    private fun createRandomEnemy(center: Position, radius: Int, minDistance: Int = 270): Monster {
+    private fun createRandomMonster(center: Position, radius: Int, minDistance: Int = 270): Monster {
         val angle = Random.nextDouble(0.0, 2 * PI)
         val distance = Random.nextDouble(minDistance.toDouble(), radius.toDouble())
 

@@ -3,7 +3,7 @@ package game.server.game.handler
 import com.fasterxml.jackson.core.type.TypeReference
 import game.server.game.domain.player.Player
 import game.server.core.service.RequestHandler
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 import game.server.dto.Direction
 import game.server.dto.Direction.*
 import game.server.dto.request.PlayerMoveRequestData

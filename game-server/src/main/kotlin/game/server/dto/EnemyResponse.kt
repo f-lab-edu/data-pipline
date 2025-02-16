@@ -1,6 +1,6 @@
 package game.server.dto
 
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 
 
 data class EnemyInfoResponse(

@@ -1,6 +1,6 @@
 package game.server.game.domain.player
 
-import game.server.domain.Position
+import game.server.game.domain.v0.Position
 import game.server.game.handler.CANVAS_HEIGHT
 import game.server.game.handler.CANVAS_WIDTH
 import org.springframework.stereotype.Component

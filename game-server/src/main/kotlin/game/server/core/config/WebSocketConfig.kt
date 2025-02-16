@@ -1,4 +1,4 @@
-package game.server.config
+package game.server.core.config
 
 import game.server.core.controller.WebSocketController
 import org.springframework.context.annotation.Bean
