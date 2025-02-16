@@ -1,14 +1,16 @@
-package game.server.enemy
+package game.server.game.domain.monster.ai
 
-import game.server.Player
-import game.server.bt.*
+import game.server.game.domain.player.Player
 import game.server.domain.Position
+import game.server.game.domain.monster.AttackType
+import game.server.game.domain.monster.Monster
+import game.server.game.domain.monster.ai.bt.*
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class EnemyAI(private val enemy: Enemy, private val player: Player) {
+class MonsterAI(private val monster: Monster, private val player: Player) {
     private val behaviorTree: BTNode
 
     init {
@@ -16,14 +18,14 @@ class EnemyAI(private val enemy: Enemy, private val player: Player) {
             listOf(
                 SequenceNode(
                     listOf(
-                        ConditionNode { enemy.attackType == AttackType.RANGED },
+                        ConditionNode { monster.attackType == AttackType.RANGED },
                         ConditionNode { distanceToPlayer() in 5..20 },
                         ActionNode { performRangedAttack() }
                     )
                 ),
                 SequenceNode(
                     listOf(
-                        ConditionNode { enemy.attackType == AttackType.MELEE },
+                        ConditionNode { monster.attackType == AttackType.MELEE },
                         ConditionNode { distanceToPlayer() <= 5 },
                         ActionNode { performMeleeAttack() }
                     )
@@ -38,8 +40,8 @@ class EnemyAI(private val enemy: Enemy, private val player: Player) {
     }
 
     private fun distanceToPlayer(): Int {
-        val dx = enemy.position.x - player.position.x
-        val dy = enemy.position.y - player.position.y
+        val dx = monster.position.x - player.position.x
+        val dy = monster.position.y - player.position.y
         return sqrt((dx * dx + dy * dy).toDouble()).toInt()
     }
 
@@ -54,15 +56,15 @@ class EnemyAI(private val enemy: Enemy, private val player: Player) {
     }
 
     private fun moveToPlayer(): Boolean {
-        val dx = player.position.x - enemy.position.x
-        val dy = player.position.y - enemy.position.y
+        val dx = player.position.x - monster.position.x
+        val dy = player.position.y - monster.position.y
         val angle = atan2(dy.toDouble(), dx.toDouble())
 
-        val speed = enemy.speed
-        val newX = (enemy.position.x + cos(angle) * speed).toInt()
-        val newY = (enemy.position.y + sin(angle) * speed).toInt()
+        val speed = monster.speed
+        val newX = (monster.position.x + cos(angle) * speed).toInt()
+        val newY = (monster.position.y + sin(angle) * speed).toInt()
 
-        enemy.position = Position(newX, newY)
+        monster.position = Position(newX, newY)
         return true
     }
 }

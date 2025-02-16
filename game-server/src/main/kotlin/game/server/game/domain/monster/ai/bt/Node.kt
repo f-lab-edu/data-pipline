@@ -1,4 +1,4 @@
-package game.server.bt
+package game.server.game.domain.monster.ai.bt
 
 // Selector 노드: 자식들 중 하나라도 성공하면 성공
 class SelectorNode(private val children: List<BTNode>) : BTNode {

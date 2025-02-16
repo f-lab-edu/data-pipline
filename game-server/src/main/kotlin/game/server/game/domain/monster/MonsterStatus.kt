@@ -1,10 +1,10 @@
-package game.server.enemy
+package game.server.game.domain.monster
 
 import game.server.dto.EnemyStatusPacket
-import game.server.enemy.AttackType.MELEE
-import game.server.enemy.AttackType.RANGED
+import game.server.game.domain.monster.AttackType.MELEE
+import game.server.game.domain.monster.AttackType.RANGED
 
-enum class EnemyStatus(
+enum class MonsterStatus(
     val displayName: String,
     val attackType: AttackType,
     val health: Int,

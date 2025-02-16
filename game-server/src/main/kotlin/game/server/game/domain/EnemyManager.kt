@@ -1,6 +1,7 @@
-package game.server.enemy
+package game.server.game.domain
 
-import game.server.Player
+import game.server.game.domain.player.Player
+import game.server.game.domain.monster.Monster
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
@@ -10,12 +11,12 @@ class EnemyManager(
     private val player: Player
 ) {
 
-    private val enemies: MutableMap<String, Enemy> = ConcurrentHashMap()
+    private val enemies: MutableMap<String, Monster> = ConcurrentHashMap()
 
-    fun addEnemy(enemy: Enemy) {
-        enemy.also {
+    fun addEnemy(monster: Monster) {
+        monster.also {
             it.initializeAI(player)
-            enemies[enemy.id] = it
+            enemies[monster.id] = it
         }
     }
 
@@ -23,16 +24,16 @@ class EnemyManager(
         enemies.remove(enemyId)
     }
 
-    fun getEnemy(enemyId: String): Enemy? {
+    fun getEnemy(enemyId: String): Monster? {
         return enemies[enemyId]
     }
 
-    fun getAllEnemies(): Collection<Enemy> {
+    fun getAllEnemies(): Collection<Monster> {
         return enemies.values
     }
 
     fun updateAllEnemies() {
-        enemies.values.forEach { it.enemyAI.update() }
+        enemies.values.forEach { it.monsterAI.update() }
     }
 
     fun enemyClear() {

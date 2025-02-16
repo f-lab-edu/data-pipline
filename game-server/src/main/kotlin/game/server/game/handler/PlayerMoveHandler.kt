@@ -1,7 +1,8 @@
-package game.server.handler
+package game.server.game.handler
 
 import com.fasterxml.jackson.core.type.TypeReference
-import game.server.Player
+import game.server.game.domain.player.Player
+import game.server.core.service.RequestHandler
 import game.server.domain.Position
 import game.server.dto.Direction
 import game.server.dto.Direction.*
