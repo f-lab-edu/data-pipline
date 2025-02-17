@@ -1,7 +1,7 @@
 package game.server.game.scheduler
 
-import game.server.game.domain.v0.Position
-import game.server.dto.response.Response
+import game.server.game.domain.vo.Position
+import game.server.core.dto.Response
 import game.server.game.handler.CANVAS_HEIGHT
 import game.server.game.handler.CANVAS_WIDTH
 import game.server.game.domain.monster.Monster

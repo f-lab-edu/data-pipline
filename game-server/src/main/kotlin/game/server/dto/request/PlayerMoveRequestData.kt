@@ -1,7 +1,7 @@
 package game.server.dto.request
 
-import game.server.game.domain.v0.Position
-import game.server.dto.Direction
+import game.server.game.domain.vo.Position
+import game.server.game.domain.vo.Direction
 
 data class PlayerMoveRequestData(
     val currentPosition: Position,

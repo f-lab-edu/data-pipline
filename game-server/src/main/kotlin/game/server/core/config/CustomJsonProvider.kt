@@ -2,9 +2,9 @@ package game.server.core.config
 
 import ch.qos.logback.classic.spi.ILoggingEvent
 import com.fasterxml.jackson.core.JsonGenerator
-import game.server.dto.request.ApiRequest
-import game.server.dto.response.ApiResponse
-import game.server.dto.response.ErrorResponse
+import game.server.core.dto.ApiRequest
+import game.server.core.dto.ApiResponse
+import game.server.core.dto.ErrorResponse
 import net.logstash.logback.composite.AbstractJsonProvider
 
 class CustomJsonProvider : AbstractJsonProvider<ILoggingEvent>() {

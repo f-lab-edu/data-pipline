@@ -3,15 +3,15 @@ package game.server.game.handler
 import com.fasterxml.jackson.core.type.TypeReference
 import game.server.game.domain.player.Player
 import game.server.core.service.RequestHandler
-import game.server.game.domain.v0.Position
-import game.server.dto.Direction
-import game.server.dto.Direction.*
+import game.server.game.domain.vo.Position
+import game.server.game.domain.vo.Direction
+import game.server.game.domain.vo.Direction.*
 import game.server.dto.request.PlayerMoveRequestData
-import game.server.dto.request.Request
-import game.server.dto.response.ApiResponse
-import game.server.dto.response.ErrorResponse
+import game.server.core.dto.Request
+import game.server.core.dto.ApiResponse
+import game.server.core.dto.ErrorResponse
 import game.server.dto.response.MoveResponseData
-import game.server.dto.response.Response
+import game.server.core.dto.Response
 import org.springframework.stereotype.Component
 
 const val CANVAS_WIDTH = 800

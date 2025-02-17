@@ -1,4 +1,4 @@
-package game.server.game.domain.v0
+package game.server.game.domain.vo
 
 data class Position(
     val x: Int,

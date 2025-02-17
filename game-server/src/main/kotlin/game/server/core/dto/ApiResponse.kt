@@ -1,4 +1,4 @@
-package game.server.dto.response
+package game.server.core.dto
 
 sealed class ApiResponse<T>(
     open val type: String,

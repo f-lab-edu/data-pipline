@@ -1,7 +1,7 @@
 package game.server.core.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import game.server.dto.response.ErrorResponse
+import game.server.core.dto.ErrorResponse
 import game.server.core.service.RequestService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

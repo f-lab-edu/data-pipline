@@ -1,7 +1,7 @@
 package game.server.core.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import game.server.dto.response.ApiResponse
+import game.server.core.dto.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
