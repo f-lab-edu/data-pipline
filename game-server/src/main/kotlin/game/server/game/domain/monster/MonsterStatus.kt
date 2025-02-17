@@ -1,6 +1,6 @@
 package game.server.game.domain.monster
 
-import game.server.dto.response.EnemyStatusPacket
+import game.server.game.dto.response.EnemyStatusPacket
 import game.server.game.domain.monster.AttackType.MELEE
 import game.server.game.domain.monster.AttackType.RANGED
 

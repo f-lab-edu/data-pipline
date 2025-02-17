@@ -1,4 +1,4 @@
-package game.server.dto.request
+package game.server.game.dto.request
 
 import game.server.game.domain.vo.Position
 import game.server.game.domain.vo.Direction

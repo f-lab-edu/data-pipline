@@ -1,4 +1,4 @@
-package game.server.dto.response
+package game.server.game.dto.response
 
 import game.server.game.domain.vo.Position
 

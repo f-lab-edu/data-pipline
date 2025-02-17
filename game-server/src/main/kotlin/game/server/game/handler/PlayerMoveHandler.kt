@@ -6,11 +6,11 @@ import game.server.core.service.RequestHandler
 import game.server.game.domain.vo.Position
 import game.server.game.domain.vo.Direction
 import game.server.game.domain.vo.Direction.*
-import game.server.dto.request.PlayerMoveRequestData
+import game.server.game.dto.request.PlayerMoveRequestData
 import game.server.core.dto.Request
 import game.server.core.dto.ApiResponse
 import game.server.core.dto.ErrorResponse
-import game.server.dto.response.MoveResponseData
+import game.server.game.dto.response.MoveResponseData
 import game.server.core.dto.Response
 import org.springframework.stereotype.Component
 
