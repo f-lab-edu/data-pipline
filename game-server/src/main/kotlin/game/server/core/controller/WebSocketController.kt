@@ -28,7 +28,7 @@ class WebSocketController(
                 .flatMap { message ->
                     val payload = message.payloadAsText
                     Mono.fromCallable {
-                        requestService.process(payload)
+                        requestService.routeRequest(payload)
                     }
                         .doOnSuccess { response -> logger.info("{}", response) }
                         .onErrorResume { e ->
