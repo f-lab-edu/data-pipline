@@ -32,7 +32,7 @@ class WebSocketController(
                     }
                         .doOnSuccess { response -> logger.info("{}", response) }
                         .onErrorResume { e ->
-                            Mono.just(ErrorResponse<Nothing>(type = "error", message = e.message ?: "Unknown error"))
+                            Mono.just(ErrorResponse.default(e))
                         }
                 }
                 .map { response ->
