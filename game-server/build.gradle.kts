@@ -14,6 +14,10 @@ dependencies {
 
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
+    // oauth
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
     }
