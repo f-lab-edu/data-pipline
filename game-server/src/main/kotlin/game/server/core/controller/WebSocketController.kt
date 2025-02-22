@@ -28,11 +28,11 @@ class WebSocketController(
                 .flatMap { message ->
                     val payload = message.payloadAsText
                     Mono.fromCallable {
-                        requestService.process(payload)
+                        requestService.routeRequest(payload)
                     }
                         .doOnSuccess { response -> logger.info("{}", response) }
                         .onErrorResume { e ->
-                            Mono.just(ErrorResponse<Nothing>(type = "error", message = e.message ?: "Unknown error"))
+                            Mono.just(ErrorResponse.default(e))
                         }
                 }
                 .map { response ->

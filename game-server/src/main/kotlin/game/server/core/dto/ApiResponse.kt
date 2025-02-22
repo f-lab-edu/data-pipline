@@ -21,4 +21,12 @@ data class ErrorResponse<T>(
     type = type,
     success = success,
     data = null
-)
+) {
+    companion object {
+        fun default(e: Throwable? = null) =
+            ErrorResponse<Nothing>(
+                type = "error",
+                message = e?.message ?: "Unknown error"
+            )
+    }
+}
