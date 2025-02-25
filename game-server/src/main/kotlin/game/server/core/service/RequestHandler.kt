@@ -1,4 +1,4 @@
-package game.server.handler
+package game.server.core.service
 
 import com.fasterxml.jackson.core.type.TypeReference
 import game.server.dto.request.Request
