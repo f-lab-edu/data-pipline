@@ -5,7 +5,7 @@
                 <timestamp />
                 <logLevel />
                 <loggerName />
-                <provider class="game.server.config.CustomJsonProvider" />
+                <provider class="game.server.core.config.CustomJsonProvider" />
             </providers>
         </encoder>
     </appender>
@@ -20,7 +20,7 @@
                 <timestamp />
                 <logLevel />
                 <loggerName />
-                <provider class="game.server.config.CustomJsonProvider" />
+                <provider class="game.server.core.config.CustomJsonProvider" />
             </providers>
         </encoder>
     </appender>

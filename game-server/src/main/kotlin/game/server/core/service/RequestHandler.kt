@@ -1,8 +1,8 @@
 package game.server.core.service
 
 import com.fasterxml.jackson.core.type.TypeReference
-import game.server.dto.request.Request
-import game.server.dto.response.ApiResponse
+import game.server.core.dto.Request
+import game.server.core.dto.ApiResponse
 
 interface RequestHandler<D, R> {
     val requestTypeReference: TypeReference<Request<D>>
