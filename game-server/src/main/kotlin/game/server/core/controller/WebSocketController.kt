@@ -31,13 +31,13 @@ class WebSocketController(
         val outputFlux = session.receive()
             .asFlow()
             .flatMapMerge(concurrency = 50) { message ->
-                processMessage(session, message)
+                handleWebSocketMessage(session, message)
             }
             .asFlux()
         return session.send(outputFlux)
     }
 
-    private fun processMessage(
+    private fun handleWebSocketMessage(
         session: WebSocketSession,
         message: WebSocketMessage
     ): Flow<WebSocketMessage> = flow {
