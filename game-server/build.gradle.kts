@@ -25,6 +25,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("com.github.jasync-sql:jasync-r2dbc-mysql:2.2.4")
 
+    // redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    implementation("org.springframework.session:spring-session-data-redis")
+
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
     }
