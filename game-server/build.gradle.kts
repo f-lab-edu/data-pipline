@@ -27,8 +27,6 @@ dependencies {
 
     // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation("org.springframework.session:spring-session-data-redis")
-
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
