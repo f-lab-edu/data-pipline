@@ -2,9 +2,8 @@ package game.server.lobby.service
 
 import game.server.lobby.domain.user.User
 import game.server.lobby.domain.user.UserRepository
-import game.server.lobby.service.SessionConstants.SESSION_PREFIX
-import game.server.lobby.service.SessionConstants.SESSION_TTL
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -14,10 +13,18 @@ private object SessionConstants {
     val SESSION_TTL: Duration = Duration.ofHours(1)
 }
 
+data class UserSession(
+    val user: User,
+    val serverIp: String,
+    val serverPort: Int
+)
+
 @Service
 class SessionManagementService(
     private val userRepository: UserRepository,
-    private val redisTemplate: ReactiveRedisTemplate<String, Any>
+    private val redisTemplate: ReactiveRedisTemplate<String, Any>,
+    @Value("\${server.ip}") private val serverIp: String,
+    @Value("\${server.port}") private val serverPort: Int
 ) {
     suspend fun handleUserSession(user: User): String {
         val sessionKey = getSessionKey(user)
@@ -28,7 +35,7 @@ class SessionManagementService(
     }
 
     private fun getSessionKey(user: User): String {
-        return "$SESSION_PREFIX${user.providerId}"
+        return "${SessionConstants.SESSION_PREFIX}${user.providerId}"
     }
 
     private suspend fun sessionExists(sessionKey: String): Boolean {
@@ -36,12 +43,13 @@ class SessionManagementService(
     }
 
     private suspend fun renewSession(sessionKey: String) {
-        redisTemplate.expire(sessionKey, SESSION_TTL).awaitSingle()
+        redisTemplate.expire(sessionKey, SessionConstants.SESSION_TTL).awaitSingle()
     }
 
     private suspend fun createNewSession(user: User): String {
         val sessionKey = getSessionKey(user)
-        redisTemplate.opsForValue().set(sessionKey, user, SESSION_TTL).awaitSingle()
+        val userSession = UserSession(user, serverIp, serverPort)
+        redisTemplate.opsForValue().set(sessionKey, userSession, SessionConstants.SESSION_TTL).awaitSingle()
         return sessionKey
     }
 
