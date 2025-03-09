@@ -5,7 +5,6 @@ import kotlinx.coroutines.reactor.mono
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.server.WebFilterExchange
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
@@ -58,12 +57,7 @@ class OAuth2SuccessHandler(
 
 
     private fun generateProviderId(provider: String, attrs: Map<String, Any>): String =
-        when (provider.lowercase()) {
-            "google" -> attrs["sub"] as String
-            "kakao" -> (attrs["id"] as Long).toString()
-            "naver" -> (attrs["response"] as Map<*, *>)["id"].toString()
-            else -> throw IllegalArgumentException("Unsupported provider: $provider")
-        }
+        OAuth2Provider.from(provider).extractProviderId(attrs)
 
     private fun getEmail(attrs: Map<String, Any>): String =
         attrs["email"]?.toString() ?: throw IllegalStateException("Email claim missing")
