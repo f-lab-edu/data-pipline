@@ -49,10 +49,13 @@ class OAuth2SuccessHandler(
     }
 
     private fun extractOAuthDetails(authentication: Authentication): Pair<String, Map<String, Any>> {
-        val oauthToken = authentication as OAuth2AuthenticationToken
-        val oauthUser = oauthToken.principal as OAuth2User
+        val oauthToken = authentication as? OAuth2AuthenticationToken
+            ?: throw IllegalArgumentException("Authentication token is not OAuth2AuthenticationToken")
+        val oauthUser = oauthToken.principal
+            ?: throw IllegalArgumentException("OAuth2AuthenticationToken has no principal")
         return Pair(oauthToken.authorizedClientRegistrationId, oauthUser.attributes)
     }
+
 
     private fun generateProviderId(provider: String, attrs: Map<String, Any>): String =
         when (provider.lowercase()) {
