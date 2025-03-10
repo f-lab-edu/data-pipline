@@ -20,7 +20,7 @@ open class ObjectConfig {
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             registerModule(JavaTimeModule())
             disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS)
-            activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
+//            activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
         }
     }
 }
