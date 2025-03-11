@@ -15,7 +15,7 @@ class SoloMatchingServiceImpl(
 ) : MatchingService {
     override fun requestMatch(userId: String): Mono<MatchResultDto> {
         val matchId = UUID.randomUUID().toString()
-        val matchResult = MatchResultDto(matchId, listOf(userId), MatchType.SOLO.name)
+        val matchResult = MatchResultDto(matchId, listOf(userId), MatchType.SOLO)
 
         return kafkaEventPublisher.publishMatchStart(matchResult)
             .thenReturn(matchResult)

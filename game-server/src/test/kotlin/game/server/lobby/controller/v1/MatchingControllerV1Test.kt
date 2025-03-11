@@ -1,6 +1,7 @@
 package game.server.lobby.controller.v1
 
 import game.server.lobby.config.TestSecurityConfig
+import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResultDto
 import game.server.lobby.service.MatchingService
 import org.junit.jupiter.api.Test
@@ -31,7 +32,7 @@ class MatchingControllerV1Test {
         val mockResult = MatchResultDto(
             matchId = "test-match",
             sessionIds = listOf(sessionId),
-            matchType = "SOLO"
+            matchType = MatchType.SOLO
         )
 
         given(soloMatchingService.requestMatch(sessionId)).willReturn(Mono.just(mockResult))
