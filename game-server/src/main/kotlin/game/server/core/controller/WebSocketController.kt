@@ -27,8 +27,7 @@ class WebSocketController(
 
         val outputFlux = session.receive()
             .map { message ->
-                val payloadText = message.payloadAsText
-                payloadText
+                message.payloadAsText
             }
             .asFlow()
             .flatMapMerge(concurrency = 50) { payloadText ->
