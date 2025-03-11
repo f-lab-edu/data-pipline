@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono
 @WebFluxTest
 @ActiveProfiles("test")
 @Import(TestSecurityConfig::class)
-class MatchingControllerV1Test {
+class SoloMatchingControllerV1Test {
 
     @Autowired
     lateinit var webTestClient: WebTestClient

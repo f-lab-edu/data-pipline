@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 
-@Service
+@Service("soloMatchingService")
 class SoloMatchingServiceImpl(
     private val kafkaEventPublisher: KafkaEventPublisher
 ) : MatchingService {
