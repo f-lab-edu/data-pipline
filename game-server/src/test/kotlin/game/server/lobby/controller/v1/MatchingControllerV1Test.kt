@@ -16,7 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
 @WebFluxTest
-@ActiveProfiles("test-lobby")
+@ActiveProfiles("test")
 @Import(TestSecurityConfig::class)
 class MatchingControllerV1Test {
 

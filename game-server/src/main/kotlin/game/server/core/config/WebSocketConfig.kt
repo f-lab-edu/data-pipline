@@ -9,7 +9,7 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 
 @Configuration
-@Profile("local", "test-game")
+@Profile("local")
 open class WebSocketConfig : WebFluxConfigurer {
 
     @Bean
