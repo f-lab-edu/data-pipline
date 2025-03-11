@@ -7,6 +7,8 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
+private const val SESSION_ID_HEADER = "X-Session-Id"
+
 @RestController
 @RequestMapping("/api/v1/match")
 class MatchingControllerV1(
@@ -14,7 +16,7 @@ class MatchingControllerV1(
 ) {
     @PostMapping("/solo", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    fun requestSoloMatch(@RequestHeader("X-Session-Id") userId: String): Mono<MatchResultDto> {
+    fun requestSoloMatch(@RequestHeader(SESSION_ID_HEADER) userId: String): Mono<MatchResultDto> {
         return soloMatchingService.requestMatch(userId)
     }
 }
