@@ -13,12 +13,12 @@ class RequestService(
 
     private val logger = LoggerFactory.getLogger(RequestService::class.java)
 
-    fun process(payload: String): ApiResponse<*> {
-        val requestMap: Map<String, Any> = objectMapper.readValue(payload, Map::class.java) as Map<String, Any>
-        val type = requestMap["type"] as? String ?: throw IllegalArgumentException("Missing 'type'")
+    fun routeRequest(payload: String): ApiResponse<*> {
+        val rootNode = objectMapper.readTree(payload)
+        val type = rootNode["type"].asText() ?: throw IllegalArgumentException("Missing 'type'")
 
         val handler = requestHandlerFactory.getHandler<Any, Any>(type)
-        val request = objectMapper.convertValue(requestMap, handler.requestTypeReference)
+        val request = objectMapper.convertValue(rootNode, handler.requestTypeReference)
 
         logger.info("{}", request)
         return handler.handle(request)

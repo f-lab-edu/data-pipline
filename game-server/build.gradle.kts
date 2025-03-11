@@ -14,6 +14,20 @@ dependencies {
 
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
+    // oauth
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    // coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.8.0")
+
+    // database
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+    implementation("com.github.jasync-sql:jasync-r2dbc-mysql:2.2.4")
+
+    // redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
     }

@@ -1,3 +1,9 @@
 logging:
   level:
     org.springframework.web: DEBUG
+    org.springframework.data.redis: DEBUG
+    org.springframework.boot.autoconfigure: DEBUG
+
+spring:
+  profiles:
+    active: local
