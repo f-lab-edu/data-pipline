@@ -5,5 +5,5 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 
 interface UserRepository : CoroutineCrudRepository<User, String> {
     suspend fun save(user: User): User
-    suspend fun findByProviderId(userId: String): User?
+    suspend fun findByProviderId(providerId: String): User?
 }
