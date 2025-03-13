@@ -5,6 +5,9 @@ import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResponseDto
 import game.server.lobby.dto.v1.response.MatchStatus
 import game.server.lobby.service.KafkaEventPublisher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Value
@@ -30,7 +33,15 @@ class MultiMatchingServiceV1(
             .awaitSingle()
 
         return if (sessionIds.size == MATCH_SIZE && sessionIds.contains(sessionId)) {
-            redisTemplate.opsForList().trim(redisMatchQueue, MATCH_SIZE.toLong(), -1).awaitFirstOrNull()
+            coroutineScope {
+                sessionIds.map { id ->
+                    async {
+                        redisTemplate.opsForList().remove(redisMatchQueue, 0, id)
+                            .awaitFirstOrNull()
+                    }
+                }.awaitAll()
+            }
+
             val matchResultId = UUID.randomUUID().toString()
 
             MatchResponseDto(
