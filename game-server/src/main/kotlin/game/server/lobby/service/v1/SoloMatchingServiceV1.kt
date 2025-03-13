@@ -13,9 +13,9 @@ import java.util.*
 class SoloMatchingServiceV1(
     private val kafkaEventPublisher: KafkaEventPublisher
 ) {
-    suspend fun requestMatch(userId: String): MatchResponseDto {
+    suspend fun requestMatch(sessionId: String): MatchResponseDto {
         val matchId = UUID.randomUUID().toString()
-        val matchResult = MatchResponseDto(MatchStatus.MATCHED, matchId, listOf(userId), MatchType.SOLO)
+        val matchResult = MatchResponseDto(MatchStatus.MATCHED, matchId, listOf(sessionId), MatchType.SOLO)
 
         kafkaEventPublisher.publishMatchStart(matchResult).awaitFirstOrNull()
         return matchResult

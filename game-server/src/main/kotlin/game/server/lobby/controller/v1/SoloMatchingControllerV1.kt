@@ -17,6 +17,6 @@ class SoloMatchingControllerV1(
 ) {
     @PostMapping("/solo", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    suspend fun requestSoloMatch(@RequestHeader(SESSION_ID_HEADER) userId: String): MatchResponseDto =
-        soloMatchingService.requestMatch(userId)
+    suspend fun requestSoloMatch(@RequestHeader(SESSION_ID_HEADER) sessionId: String): MatchResponseDto =
+        soloMatchingService.requestMatch(sessionId)
 }
