@@ -24,19 +24,19 @@ class MultiMatchingServiceV1(
     suspend fun requestMatch(sessionId: String): MatchResponseDto {
         redisTemplate.opsForList().rightPush(redisMatchQueue, sessionId).awaitSingle()
 
-        val players = redisTemplate.opsForList()
+        val sessionIds = redisTemplate.opsForList()
             .range(redisMatchQueue, 0, MATCH_SIZE.toLong() - 1)
             .collectList()
             .awaitSingle()
 
-        return if (players.size == MATCH_SIZE && players.contains(sessionId)) {
+        return if (sessionIds.size == MATCH_SIZE && sessionIds.contains(sessionId)) {
             redisTemplate.opsForList().trim(redisMatchQueue, MATCH_SIZE.toLong(), -1).awaitFirstOrNull()
             val matchResultId = UUID.randomUUID().toString()
 
             MatchResponseDto(
                 status = MatchStatus.MATCHED,
                 matchId = matchResultId,
-                sessionIds = players,
+                sessionIds = sessionIds,
                 matchType = MatchType.MULTI
             ).also { kafkaEventPublisher.publishMatchStart(it).awaitFirstOrNull() }
 
