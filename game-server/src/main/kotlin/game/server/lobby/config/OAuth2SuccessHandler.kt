@@ -41,8 +41,7 @@ class OAuth2SuccessHandler(
     ): Mono<Void> {
         return with(webFilterExchange.exchange.response) {
             statusCode = HttpStatus.FOUND
-            headers.location = URI.create("http://localhost:8080")
-            headers.add("X-Session-Id", sessionId)
+            headers.location = URI.create("http://localhost:8080/lobby.html?sessionId=$sessionId")
             setComplete()
         }
     }
