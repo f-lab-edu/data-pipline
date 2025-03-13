@@ -2,8 +2,9 @@ package game.server.lobby.controller.v1
 
 import game.server.lobby.config.TestSecurityConfig
 import game.server.lobby.domain.match.MatchType
-import game.server.lobby.dto.v1.response.MatchResultDto
-import game.server.lobby.service.MatchingService
+import game.server.lobby.dto.v1.response.MatchResponseDto
+import game.server.lobby.service.v1.SoloMatchingServiceV1
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -24,18 +25,21 @@ class SoloMatchingControllerV1Test {
     lateinit var webTestClient: WebTestClient
 
     @MockBean
-    lateinit var soloMatchingService: MatchingService
+    lateinit var soloMatchingService: SoloMatchingServiceV1
 
     @Test
     fun `요청 헤더의 Session-Id를 기반으로 솔로매칭 응답을 확인한다`() {
         val sessionId = "test-user"
-        val mockResult = MatchResultDto(
+        val matchResultDto = MatchResponseDto(
             matchId = "test-match",
             sessionIds = listOf(sessionId),
             matchType = MatchType.SOLO
         )
 
-        given(soloMatchingService.requestMatch(sessionId)).willReturn(Mono.just(mockResult))
+        runBlocking {
+            given(soloMatchingService.requestMatch(sessionId)).willReturn(matchResultDto)
+        }
+
 
         webTestClient.post()
             .uri("/api/v1/match/solo")
