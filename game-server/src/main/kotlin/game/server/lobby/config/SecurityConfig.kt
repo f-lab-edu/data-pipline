@@ -21,6 +21,7 @@ open class SecurityConfig(
                 authorize.pathMatchers("/login/**", "/oauth2/**").permitAll()
                 authorize.anyExchange().authenticated()
             }
+            .formLogin { it.loginPage("/login") }
             .oauth2Login { oauth2 ->
                 oauth2.authenticationSuccessHandler(oAuth2SuccessHandler)
             }.build()

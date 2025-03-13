@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <style>
+        body {
+            background-color: #333;
+            color: #FFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        a.oauth-btn {
+            padding: 15px 30px;
+            background-color: #0d6efd;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 250px;
+            text-align: center;
+        }
+        a.oauth-btn:hover {
+            background-color: #0b5ed7;
+        }
+        /* 구글 로그인 버튼 스타일 별도 지정 */
+        a.google-btn {
+            background-color: #DB4437;
+        }
+        a.google-btn:hover {
+            background-color: #c33d2f;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Survival RPG 로그인</h2>
+
+<a class="oauth-btn" href="/oauth2/authorization/naver">네이버 로그인</a>
+<a class="oauth-btn" href="/oauth2/authorization/kakao">카카오 로그인</a>
+<a class="oauth-btn google-btn" href="/oauth2/authorization/google">구글 로그인</a>
+
+</body>
+</html>
