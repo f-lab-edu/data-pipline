@@ -4,15 +4,16 @@ import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResponseDto
 import game.server.lobby.dto.v1.response.Matched
 import game.server.lobby.dto.v1.response.Waiting
+import game.server.lobby.service.v1.matching.util.MatchIdGenerator
 import org.springframework.stereotype.Service
-import java.util.*
 
 private const val MATCH_SIZE = 4
 
 @Service
 class MultiMatchingServiceV1(
     private val matchQueueRepository: MatchQueueRepository,
-    private val eventPublisher: MatchEventPublisher
+    private val eventPublisher: MatchEventPublisher,
+    private val matchIdGenerator: MatchIdGenerator,
 ) {
 
     suspend fun requestMatch(sessionId: String): MatchResponseDto {
@@ -22,7 +23,7 @@ class MultiMatchingServiceV1(
 
         return if (sessionIds.size == MATCH_SIZE && sessionIds.contains(sessionId)) {
             matchQueueRepository.removeWaitingSessions(sessionIds)
-            val matchResultId = UUID.randomUUID().toString()
+            val matchResultId = matchIdGenerator.generate()
 
             Matched(
                 matchId = matchResultId,
