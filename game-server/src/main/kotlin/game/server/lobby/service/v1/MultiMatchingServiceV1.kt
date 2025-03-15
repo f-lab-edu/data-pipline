@@ -4,6 +4,8 @@ package game.server.lobby.service.v1
 import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResponseDto
 import game.server.lobby.dto.v1.response.MatchStatus
+import game.server.lobby.dto.v1.response.Matched
+import game.server.lobby.dto.v1.response.Waiting
 import game.server.lobby.service.KafkaEventPublisher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -44,20 +46,14 @@ class MultiMatchingServiceV1(
 
             val matchResultId = UUID.randomUUID().toString()
 
-            MatchResponseDto(
-                status = MatchStatus.MATCHED,
+            Matched(
                 matchId = matchResultId,
                 sessionIds = sessionIds,
                 matchType = MatchType.MULTI
-            ).also { kafkaEventPublisher.publishMatchStart(it).awaitFirstOrNull() }
+            ).also { kafkaEventPublisher.publishMatchStart(it) }
 
         } else {
-            MatchResponseDto(
-                status = MatchStatus.WAITING,
-                matchId = null,
-                sessionIds = emptyList(),
-                matchType = MatchType.MULTI
-            )
+            Waiting(matchType = MatchType.MULTI)
         }
     }
 
