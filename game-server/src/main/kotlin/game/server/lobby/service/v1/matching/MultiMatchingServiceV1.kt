@@ -18,11 +18,9 @@ class MultiMatchingServiceV1(
 
     suspend fun requestMatch(sessionId: String): MatchResponseDto {
         matchQueueRepository.addWaitingSession(sessionId)
-
-        val sessionIds = matchQueueRepository.getWaitingSessions(MATCH_SIZE.toLong())
+        val sessionIds = matchQueueRepository.popSessionsIfReady(MATCH_SIZE)
 
         return if (sessionIds.size == MATCH_SIZE && sessionIds.contains(sessionId)) {
-            matchQueueRepository.removeWaitingSessions(sessionIds)
             val matchResultId = matchIdGenerator.generate()
 
             Matched(
@@ -36,6 +34,10 @@ class MultiMatchingServiceV1(
     }
 
     suspend fun cancelMatch(sessionId: String) {
-        matchQueueRepository.removeWaitingSession(sessionId)
+        val removedCount = matchQueueRepository.removeWaitingSession(sessionId)
+        if (removedCount == 0L) {
+            TODO("이미 게임이 시작되어 매칭을 취소할 수 없습니다 토스트 메시지 기능 구현")
+        }
     }
+
 }
