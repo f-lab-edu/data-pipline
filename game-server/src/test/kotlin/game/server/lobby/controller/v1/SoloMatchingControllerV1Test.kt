@@ -4,7 +4,7 @@ import game.server.lobby.config.TestSecurityConfig
 import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResponseDto
 import game.server.lobby.dto.v1.response.Matched
-import game.server.lobby.service.v1.SoloMatchingServiceV1
+import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
