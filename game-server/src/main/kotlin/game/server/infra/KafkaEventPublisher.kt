@@ -8,9 +8,9 @@ import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class KafkaEventPublisher(
+open class KafkaEventPublisher(
     @Value("\${kafka.topic.match-start}") private val matchStartTopic: String,
-    private val kafkaTemplate: ReactiveKafkaProducerTemplate<String, Any>,
+    private val kafkaTemplate: ReactiveKafkaProducerTemplate<String, Matched>,
 ) : MatchEventPublisher {
 
     override suspend fun publishMatchStart(matched: Matched) {

@@ -22,7 +22,7 @@ data class UserSession(
 @Service
 class SessionManagementService(
     private val userRepository: UserRepository,
-    private val redisTemplate: ReactiveRedisTemplate<String, Any>,
+    private val redisTemplate: ReactiveRedisTemplate<String, UserSession>,
     @Value("\${server.ip}") private val serverIp: String,
     @Value("\${server.port}") private val serverPort: Int
 ) {
