@@ -1,8 +1,8 @@
-package game.server.core.controller
+package game.server.game.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import game.server.core.dto.ErrorResponse
-import game.server.core.service.RequestService
+import game.server.game.dto.v1.response.ErrorResponse
+import game.server.game.service.RequestService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.reactive.asFlow

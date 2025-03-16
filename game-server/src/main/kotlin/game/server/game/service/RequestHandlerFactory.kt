@@ -1,4 +1,4 @@
-package game.server.core.service
+package game.server.game.service
 
 import org.springframework.stereotype.Component
 
