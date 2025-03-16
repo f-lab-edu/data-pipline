@@ -2,15 +2,18 @@ package game.server.infra
 
 import game.server.lobby.service.v1.matching.MatchQueueRepository
 import kotlinx.coroutines.reactive.awaitFirstOrNull
+import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.stereotype.Repository
 
 @Repository
-class RedisMatchQueueRepository(
-    private val redisTemplate: ReactiveRedisTemplate<String, Any>,
+open class RedisMatchQueueRepository(
+    @Qualifier("reactiveStringRedisTemplate")
+    private val redisTemplate: ReactiveRedisTemplate<String, String>,
     @Value("\${spring.data.redis.match-queue-key}") private val redisMatchQueue: String
 ) : MatchQueueRepository {
 
@@ -31,6 +34,23 @@ class RedisMatchQueueRepository(
             """.trimIndent(),
             List::class.java as Class<List<String>>
         )
+
+        private val ADD_IF_NOT_EXISTS_LUA_SCRIPT: RedisScript<Long> = RedisScript.of(
+            """
+            local key = KEYS[1]
+            local sessionId = ARGV[1]
+            
+            local index = redis.call('LPOS', key, sessionId)
+
+            if (not index) then
+                redis.call('RPUSH', key, sessionId)
+                return 1
+            end
+            
+            return 0
+             """.trimIndent(),
+            Long::class.java
+        )
     }
 
     override suspend fun popSessionsIfReady(matchCount: Int): List<String> =
@@ -43,9 +63,12 @@ class RedisMatchQueueRepository(
             .awaitSingle()
             .flatten()
 
-    override suspend fun addWaitingSession(sessionId: String) {
-        redisTemplate.opsForList()
-            .rightPush(redisMatchQueue, sessionId)
+    override suspend fun addWaitingSessionIfNotExists(sessionId: String) {
+        redisTemplate.execute(
+            ADD_IF_NOT_EXISTS_LUA_SCRIPT,
+            listOf(redisMatchQueue),
+            listOf(sessionId)
+        )
             .awaitSingle()
     }
 

@@ -17,7 +17,7 @@ class MultiMatchingServiceV1(
 ) {
 
     suspend fun requestMatch(sessionId: String): MatchResponseDto {
-        matchQueueRepository.addWaitingSession(sessionId)
+        matchQueueRepository.addWaitingSessionIfNotExists(sessionId)
         val sessionIds = matchQueueRepository.popSessionsIfReady(MATCH_SIZE)
 
         return if (sessionIds.size == MATCH_SIZE && sessionIds.contains(sessionId)) {
