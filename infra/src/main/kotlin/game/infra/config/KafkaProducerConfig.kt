@@ -1,8 +1,8 @@
-package game.server.infra.config
+package game.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import game.server.lobby.dto.v1.response.Matched
+import com.game.dto.v1.maching.Matched
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
