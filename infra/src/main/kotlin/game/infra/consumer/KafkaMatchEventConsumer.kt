@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
+@Profile("consumer-local")
 @Component
 @Import(ObjectConfig::class)
 class KafkaMatchedEventConsumer(
