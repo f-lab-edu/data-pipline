@@ -1,9 +1,8 @@
 package game.server.lobby.controller.v1
 
 import game.server.lobby.config.TestSecurityConfig
-import game.server.lobby.domain.match.MatchType
-import game.server.lobby.dto.v1.response.MatchResponseDto
-import game.server.lobby.dto.v1.response.Matched
+import com.game.dto.v1.maching.MatchType
+import com.game.dto.v1.maching.Matched
 import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -15,7 +14,6 @@ import org.mockito.BDDMockito.given
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
-import reactor.core.publisher.Mono
 
 @WebFluxTest(SoloMatchingControllerV1::class)
 @ActiveProfiles("test")

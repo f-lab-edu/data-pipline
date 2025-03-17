@@ -1,12 +1,10 @@
 package game.server.lobby.controller.v1
 
-import game.server.lobby.dto.v1.response.MatchResponseDto
+import com.game.dto.v1.maching.MatchResponseDto
 import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
-import kotlinx.coroutines.reactor.mono
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 const val SESSION_ID_HEADER = "X-Session-Id"
 
