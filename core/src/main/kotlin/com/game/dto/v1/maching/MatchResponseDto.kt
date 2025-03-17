@@ -1,6 +1,5 @@
-package game.server.lobby.dto.v1.response
+package com.game.dto.v1.maching
 
-import game.server.lobby.domain.match.MatchType
 
 sealed class MatchResponseDto(open val status: MatchStatus, open val matchType: MatchType)
 
