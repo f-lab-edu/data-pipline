@@ -1,13 +1,14 @@
 package game.server.lobby.domain.user
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Table
+import com.game.dto.v1.UserDto
 
-@Table("users")
 data class User(
-    @Id val id: Long? = null,
+    val id: Long? = null,
     val providerId: String,
     val provider: String,
     val email: String,
     val name: String,
-)
+) {
+
+    fun toDto() = UserDto(id, providerId, provider, email, name)
+}
