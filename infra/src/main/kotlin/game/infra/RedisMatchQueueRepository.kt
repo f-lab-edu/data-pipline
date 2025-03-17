@@ -1,6 +1,6 @@
-package game.server.infra
+package game.infra
 
-import game.server.lobby.service.v1.matching.MatchQueueRepository
+import com.game.service.v1.matching.MatchQueueRepository
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingle

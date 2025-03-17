@@ -1,8 +1,8 @@
-package game.server.infra.config
+package game.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import game.server.lobby.service.UserSession
+import com.game.dto.v1.UserSession
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import

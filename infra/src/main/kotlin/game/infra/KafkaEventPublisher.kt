@@ -1,7 +1,7 @@
-package game.server.infra
+package game.infra
 
-import game.server.lobby.dto.v1.response.Matched
-import game.server.lobby.service.v1.matching.MatchEventPublisher
+import com.game.dto.v1.maching.Matched
+import com.game.service.v1.matching.MatchEventPublisher
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
