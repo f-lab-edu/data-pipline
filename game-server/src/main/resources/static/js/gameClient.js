@@ -4,10 +4,15 @@ if (!socket || socket.readyState !== WebSocket.OPEN) {
 }
 
 
-    const canvas = document.getElementById("gameCanvas");
+const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
 
+let otherPlayers = {}; // key: playerId, value: player object
+
+// 다른 유저 기본 색상
+const OTHER_PLAYER_COLOR = "orange";
 let player = { x: 400, y: 300, width: 20, height: 20, color: "blue" };
+
 let enemies = [];
 const enemyColors = {
     Zergling: "green",
@@ -35,7 +40,28 @@ socket.addEventListener("error", (error) => {
 
 // 서버에서 수신된 메시지 처리 함수
 function handleServerMessage(response) {
-    if (response.type === "enemy_spawn") {
+    if (response.eventType === "PLAYER_MOVED") {
+        const { playerId, newPositionX, newPositionY } = response;
+
+        // 이미 존재하는지 체크
+        if (otherPlayers[playerId]) {
+            otherPlayers[playerId].x = newPositionX;
+            otherPlayers[playerId].y = newPositionY;
+        } else {
+            // 할당된 색상을 이용해서 플레이어 신규 추가
+            const assignedColor = window.playerColors[playerId] || "orange";
+            otherPlayers[playerId] = {
+                x: newPositionX,
+                y: newPositionY,
+                width: 20,
+                height: 20,
+                color: assignedColor
+            };
+        }
+    }
+
+
+    else if (response.type === "enemy_spawn") {
         enemies = response.data.map((enemy) => {
             const { status } = enemy;
             return {
@@ -121,12 +147,19 @@ function gameLoop() {
 
 // 게임 화면 렌더링 함수
 function renderScene() {
-
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    // 플레이어 본인 렌더링
     context.fillStyle = player.color;
     context.fillRect(player.x, player.y, player.width, player.height);
 
+    // 다른 플레이어 렌더링 추가
+    Object.values(otherPlayers).forEach((otherPlayer) => {
+        context.fillStyle = otherPlayer.color;
+        context.fillRect(otherPlayer.x, otherPlayer.y, otherPlayer.width, otherPlayer.height);
+    });
+
+    // 적 렌더링
     enemies.forEach((enemy) => {
         context.fillStyle = enemy.color;
         context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
@@ -138,8 +171,9 @@ function renderScene() {
 
     context.fillStyle = "white";
     context.font = "20px Arial";
-    context.fillText(`Round: ${round}`, 10, 30);
+    context.fillText(`라운드: ${round}`, 10, 20);
 }
+
 
 // 게임 시작
 gameLoop();

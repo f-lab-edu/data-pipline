@@ -17,6 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+window.playerColors = {};
+const availableColors = ["orange", "purple", "cyan", "green", "pink", "yellow", "brown"];
+
+
 // 웹소켓 연결 및 이벤트 처리 함수
 function connectWebSocket(sessionKey) {
     if (window.socket && window.socket.readyState === WebSocket.OPEN) {
@@ -37,7 +41,12 @@ function connectWebSocket(sessionKey) {
             document.getElementById("lobby").style.display = "none";
             document.getElementById("gameContainer").style.display = "block";
 
-            // 게임 클라이언트 스크립트 동적 로딩
+            // 플레이어들에게 색상 할당
+            data.sessionIds.forEach((sessionId, index) => {
+                window.playerColors[sessionId] = availableColors[index % availableColors.length];
+            });
+
+            // 게임 클라이언트 동적 로딩
             const gameScript = document.createElement("script");
             gameScript.src = "js/gameClient.js";
             gameScript.onload = function() {
@@ -45,6 +54,7 @@ function connectWebSocket(sessionKey) {
             };
             document.body.appendChild(gameScript);
         }
+
 
     });
 
