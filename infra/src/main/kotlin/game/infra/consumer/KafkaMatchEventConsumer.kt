@@ -45,7 +45,7 @@ class KafkaMatchedEventConsumer(
 
         userSessions.forEach { session ->
             val uri = serverEndpoint(session)
-            sendViaWebSocket(uri, matched)
+            sendViaWebSocket(uri, matched.also { it.sessionIds = listOf(session.sessionId) })
         }
     }
 
