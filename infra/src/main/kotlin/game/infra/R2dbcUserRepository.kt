@@ -3,9 +3,10 @@ package game.infra
 import com.game.dto.v1.UserDto
 import com.game.repository.v1.UserRepository
 import game.infra.r2dbc.entity.UserEntity
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
-
+@Profile("local")
 @Repository
 open class R2dbcUserRepository(
     private val delegate: SpringDataUserRepository

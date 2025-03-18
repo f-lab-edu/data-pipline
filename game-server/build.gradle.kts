@@ -1,8 +1,17 @@
+import org.springframework.boot.gradle.tasks.run.BootRun
+
 version = "1.0.0"
 
 plugins {
     id("org.springframework.boot") version "3.1.4"
     id("io.spring.dependency-management")
+}
+
+
+tasks.register<BootRun>("bootRunGameServer") {
+    group = "application"
+    mainClass.set("game.server.GameServerApplicationKt")
+    classpath = sourceSets["main"].runtimeClasspath
 }
 
 dependencies {
