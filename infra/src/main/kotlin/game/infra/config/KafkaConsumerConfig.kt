@@ -3,8 +3,8 @@ package game.infra.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.Matched
+import com.game.dto.v1.move.PlayerMoved
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -27,25 +27,35 @@ open class KafkaConsumerConfig(
     @Value("\${kafka.ip}") private val kafkaIp: String,
     @Value("\${kafka.port}") private val kafkaPort: String,
 ) {
-    @Bean
-    open fun consumerFactory(): ConsumerFactory<String, Matched> {
-        val jsonDeserializer = JsonDeserializer(Matched::class.java, objectMapper).apply {
+
+    private fun <T> createConsumerFactory(type: Class<T>): ConsumerFactory<String, T> {
+        val jsonDeserializer = JsonDeserializer(type, objectMapper).apply {
             addTrustedPackages("*")
         }
 
         val props = mapOf(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
             ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java
         )
+
         return DefaultKafkaConsumerFactory(props, StringDeserializer(), jsonDeserializer)
     }
 
-    @Bean
-    open fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Matched> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, Matched>()
-        factory.consumerFactory = consumerFactory()
+    private fun <T> createKafkaListenerContainerFactory(type: Class<T>): ConcurrentKafkaListenerContainerFactory<String, T> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, T>()
+        factory.consumerFactory = createConsumerFactory(type)
         return factory
+    }
+
+    @Bean
+    open fun matchedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Matched> {
+        return createKafkaListenerContainerFactory(Matched::class.java)
+    }
+
+    @Bean
+    open fun movedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
+        return createKafkaListenerContainerFactory(PlayerMoved::class.java)
     }
 }

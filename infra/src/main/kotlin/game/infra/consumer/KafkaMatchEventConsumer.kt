@@ -2,7 +2,6 @@ package game.infra.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import com.game.dto.v1.UserSession
 import com.game.dto.v1.maching.Matched
 import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +31,7 @@ class KafkaMatchedEventConsumer(
     @KafkaListener(
         topics = ["\${kafka.topic.match-start}"],
         groupId = "\${kafka.group.match-start-group}",
-        containerFactory = "kafkaListenerContainerFactory"
+        containerFactory = "movedKafkaListenerContainerFactory"
         )
     fun listen(matched: Matched) {
         CoroutineScope(Dispatchers.IO).launch {
