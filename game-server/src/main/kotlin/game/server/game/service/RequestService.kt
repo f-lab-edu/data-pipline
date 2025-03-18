@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import game.server.game.dto.v1.response.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.socket.WebSocketSession
 
 @Service
 class RequestService(
@@ -13,7 +14,7 @@ class RequestService(
 
     private val logger = LoggerFactory.getLogger(RequestService::class.java)
 
-    fun routeRequest(payload: String): ApiResponse<*> {
+    fun routeRequest(payload: String, socket: WebSocketSession): ApiResponse<*> {
         val rootNode = objectMapper.readTree(payload)
         val type = rootNode["type"].asText() ?: throw IllegalArgumentException("Missing 'type'")
 
@@ -21,6 +22,6 @@ class RequestService(
         val request = objectMapper.convertValue(rootNode, handler.requestTypeReference)
 
         logger.info("{}", request)
-        return handler.handle(request)
+        return handler.handle(request, socket)
     }
 }

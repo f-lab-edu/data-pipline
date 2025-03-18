@@ -56,7 +56,7 @@ class WebSocketController(
         scope: CoroutineScope
     ): Flow<WebSocketMessage> = flow {
         val response = withContext(scope.coroutineContext) {
-            requestService.routeRequest(payloadText)
+            requestService.routeRequest(payloadText, socket)
         }
         logger.info("{}", response)
         val jsonResponse = objectMapper.writeValueAsString(response)
