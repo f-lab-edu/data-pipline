@@ -43,14 +43,15 @@ class KafkaMatchedEventConsumer(
     private suspend fun consumeMatchedEvent(matched: Matched) {
         val userSessions = redisSessionManagement.findBySessionId(matched.sessionIds)
 
-        userSessions.forEach { session ->
-            val uri = serverEndpoint(session)
-            sendViaWebSocket(uri, matched.also { it.sessionIds = listOf(session.sessionId) })
+        val sessionsGroupedByServer = userSessions.groupBy { session ->
+            "${session.serverIp}:${session.serverPort}"
         }
-    }
 
-    private fun serverEndpoint(session: UserSession): URI {
-        return URI.create("ws://${session.serverIp}:${session.serverPort}/internal-websocket")
+        sessionsGroupedByServer.forEach { (server, sessions) ->
+            val uri = URI.create("ws://$server/internal-websocket")
+            val matchedEvent = matched.copy(sessionIds = sessions.map { it.sessionId })
+            sendViaWebSocket(uri, matchedEvent)
+        }
     }
 
     private suspend fun sendViaWebSocket(uri: URI, event: Matched) {
