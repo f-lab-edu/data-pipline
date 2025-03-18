@@ -10,8 +10,8 @@ class MonsterAIScheduler(
     private val monsterManager: MonsterManager,
 ) {
 
-    @Scheduled(initialDelay = 10500, fixedRate = 100)
-    fun updateEnemies() {
-        monsterManager.updateAllEnemies()
-    }
+//    @Scheduled(initialDelay = 10500, fixedRate = 100)
+//    fun updateEnemies() {
+//        monsterManager.updateAllEnemies()
+//    }
 }
