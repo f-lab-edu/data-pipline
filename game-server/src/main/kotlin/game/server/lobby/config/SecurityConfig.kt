@@ -18,7 +18,7 @@ open class SecurityConfig(
         return http
             .csrf { csrf -> csrf.disable()}
             .authorizeExchange { authorize ->
-                authorize.pathMatchers("/login/**", "/oauth2/**").permitAll()
+                authorize.pathMatchers("/login/**", "/oauth2/**", "/internal-websocket").permitAll()
                 authorize.anyExchange().authenticated()
             }
             .formLogin { it.loginPage("/login") }
