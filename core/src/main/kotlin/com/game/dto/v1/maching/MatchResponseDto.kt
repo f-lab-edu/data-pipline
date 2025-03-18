@@ -6,8 +6,9 @@ sealed class MatchResponseDto(open val status: MatchStatus, open val matchType: 
 data class Matched(
     val matchId: String,
     val sessionIds: List<String>,
-    override val matchType: MatchType
-) : MatchResponseDto(MatchStatus.MATCHED, matchType)
+    override val matchType: MatchType,
+    override val eventType: String = "MATCHED"
+) : MatchResponseDto(MatchStatus.MATCHED, matchType), KafkaEvent
 
 data class Waiting(
     override val matchType: MatchType
