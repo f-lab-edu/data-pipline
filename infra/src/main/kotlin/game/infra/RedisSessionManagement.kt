@@ -46,7 +46,7 @@ open class RedisSessionManagement(
         serverIp: String,
         serverPort: String
     ): String {
-        val userSession = UserSession(userDto, serverIp, serverPort)
+        val userSession = UserSession(sessionKey, userDto, serverIp, serverPort)
         redisTemplate.opsForValue().set(sessionKey, userSession, duration).awaitSingle()
         return sessionKey
     }
