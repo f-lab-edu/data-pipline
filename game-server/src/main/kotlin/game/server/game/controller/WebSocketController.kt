@@ -1,6 +1,7 @@
 package game.server.game.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import game.server.game.session.WebSocketSessionManager
 import game.server.game.dto.v1.response.ErrorResponse
 import game.server.game.service.RequestService
 import kotlinx.coroutines.*
@@ -18,32 +19,39 @@ import reactor.core.publisher.Mono
 class WebSocketController(
     private val objectMapper: ObjectMapper,
     private val requestService: RequestService,
-) : WebSocketHandler {
+    private val sessionManager: WebSocketSessionManager,
+    ) : WebSocketHandler {
 
     private val logger = LoggerFactory.getLogger(WebSocketController::class.java)
 
-    override fun handle(session: WebSocketSession): Mono<Void> {
-        val sessionScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    override fun handle(socket: WebSocketSession): Mono<Void> {
+        val sessionKey = socket.handshakeInfo.uri.query
+            .let { query ->
+                query.split("=")[1]
+            }
+        sessionManager.register(sessionKey, socket)
 
-        val outputFlux = session.receive()
+        val socketScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        val outputFlux = socket.receive()
             .map { message ->
                 message.payloadAsText
             }
             .asFlow()
             .flatMapMerge(concurrency = 50) { payloadText ->
-                handlePayload(session, payloadText, sessionScope)
+                handlePayload(socket, payloadText, socketScope)
             }
             .asFlux()
 
-        return session.send(outputFlux)
+        return socket.send(outputFlux)
             .doFinally {
-                logger.info("Session(${session.id}) finished")
-                sessionScope.cancel()
+                logger.info("Session(${socket.id}) finished")
+                socketScope.cancel()
+                sessionManager.remove(sessionKey)
             }
     }
 
     private fun handlePayload(
-        session: WebSocketSession,
+        socket: WebSocketSession,
         payloadText: String,
         scope: CoroutineScope
     ): Flow<WebSocketMessage> = flow {
@@ -52,9 +60,9 @@ class WebSocketController(
         }
         logger.info("{}", response)
         val jsonResponse = objectMapper.writeValueAsString(response)
-        emit(session.textMessage(jsonResponse))
+        emit(socket.textMessage(jsonResponse))
     }.catch { e ->
         val errorResponse = ErrorResponse.default(e)
-        emit(session.textMessage(objectMapper.writeValueAsString(errorResponse)))
+        emit(socket.textMessage(objectMapper.writeValueAsString(errorResponse)))
     }
 }
