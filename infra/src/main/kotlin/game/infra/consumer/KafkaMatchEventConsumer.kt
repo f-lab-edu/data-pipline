@@ -46,10 +46,9 @@ class KafkaMatchedEventConsumer(
             "${session.serverIp}:${session.serverPort}"
         }
 
-        sessionsGroupedByServer.forEach { (server, sessions) ->
+        sessionsGroupedByServer.forEach { (server, _) ->
             val uri = URI.create("ws://$server/internal-websocket")
-            val matchedEvent = matched.copy(sessionIds = sessions.map { it.sessionId })
-            sendViaWebSocket(uri, matchedEvent)
+            sendViaWebSocket(uri, matched)
         }
     }
 

@@ -1,30 +1,10 @@
 package game.server.game.session
 
 import game.server.game.domain.player.Player
+import game.server.game.domain.vo.Position
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketSession
 import java.util.concurrent.ConcurrentHashMap
-
-//@Component
-//class PlayerManager {
-//    private val players: ConcurrentHashMap<String, MutableMap<String, Player>> = ConcurrentHashMap()
-//
-//    fun addPlayer(matchId: String, sessionId: String, player: Player) {
-//        players.computeIfAbsent(matchId) { ConcurrentHashMap() }[sessionId] = player
-//    }
-//
-//    fun getPlayer(matchId: String, sessionId: String): Player? =
-//        players[matchId]?.get(sessionId)
-//
-//    fun removePlayer(matchId: String, sessionId: String) {
-//        players[matchId]?.remove(sessionId)
-//        if (players[matchId]?.isEmpty() == true) players.remove(matchId)
-//    }
-//
-//    fun getPlayersInMatch(matchId: String): Collection<Player> =
-//        players[matchId]?.values ?: emptyList()
-//}
-
 
 @Component
 class PlayerManager {
@@ -40,5 +20,11 @@ class PlayerManager {
 
     fun removePlayer(session: WebSocketSession) {
         players.remove(session.id)
+    }
+
+    fun updatePlayerPosition(matchId: String, sessionId: String, positionX: Int, positionY: Int) {
+        val movePlayer = players.values.flatten().find { it.sessionId == sessionId }
+            ?: throw IllegalArgumentException("Player with sessionId $sessionId not found")
+        movePlayer.position = Position(positionX, positionY)
     }
 }

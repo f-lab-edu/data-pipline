@@ -50,7 +50,8 @@ class PlayerMoveHandler(
                         matchId = player.matchId,
                         newPositionX = newX,
                         newPositionY = newY,
-                        receivers = playerManager.getReceivers(player.matchId).map { it.sessionId }
+                        receivers = playerManager.getReceivers(player.matchId)
+                            .map { it.sessionId }.filter { it != player.sessionId }
                     )
                 )
             }
