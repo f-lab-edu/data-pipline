@@ -1,6 +1,7 @@
 package com.game.service.v1
 
 import com.game.dto.v1.UserDto
+import com.game.dto.v1.UserSession
 import java.time.Duration
 
 interface SessionManagement {
@@ -11,4 +12,6 @@ interface SessionManagement {
         serverIp: String,
         serverPort: String
     ): String
+
+    suspend fun findBySessionId(sessionIds: List<String>): List<UserSession>
 }

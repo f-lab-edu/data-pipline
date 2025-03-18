@@ -8,7 +8,7 @@ plugins {
 }
 
 
-tasks.register<BootRun>("bootRungGameServer") {
+tasks.register<BootRun>("bootRunGameServer") {
     group = "application"
     mainClass.set("game.server.GameServerApplicationKt")
     classpath = sourceSets["main"].runtimeClasspath
