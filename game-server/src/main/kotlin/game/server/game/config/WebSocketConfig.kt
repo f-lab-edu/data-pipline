@@ -1,6 +1,6 @@
 package game.server.game.config
 
-import game.server.game.controller.MatchedEventController
+import game.server.game.controller.KafkaEventController
 import game.server.game.controller.WebSocketController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,7 +23,7 @@ open class WebSocketConfig : WebFluxConfigurer {
     }
 
     @Bean
-    open fun internalWebSocketHandlerMapping(matchedEventController: MatchedEventController): SimpleUrlHandlerMapping {
+    open fun internalWebSocketHandlerMapping(matchedEventController: KafkaEventController): SimpleUrlHandlerMapping {
         return SimpleUrlHandlerMapping().apply {
             urlMap = mapOf("/internal-websocket" to matchedEventController)
             order = 1
