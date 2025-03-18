@@ -5,7 +5,7 @@ sealed class MatchResponseDto(open val status: MatchStatus, open val matchType: 
 
 data class Matched(
     val matchId: String,
-    var sessionIds: List<String>,
+    val sessionIds: List<String>,
     override val matchType: MatchType
 ) : MatchResponseDto(MatchStatus.MATCHED, matchType)
 
