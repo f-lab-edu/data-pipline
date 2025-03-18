@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
 import com.game.dto.v1.UserSession
 import com.game.dto.v1.maching.Matched
+import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,13 +23,17 @@ import java.util.concurrent.ConcurrentHashMap
 @Import(ObjectConfig::class)
 class KafkaMatchedEventConsumer(
     private val objectMapper: ObjectMapper,
-    private val redisUserSessionRepository: RedisUserSessionRepository,
+    private val redisSessionManagement: SessionManagement,
     private val webSocketClient: ReactorNettyWebSocketClient
 ) {
 
     private val gameServerConnections = ConcurrentHashMap<String, ReactorNettyWebSocketClient>()
 
-    @KafkaListener(topics = ["matched-topic"], groupId = "matching-group")
+    @KafkaListener(
+        topics = ["\${kafka.topic.match-start}"],
+        groupId = "\${kafka.group.match-start-group}",
+        containerFactory = "kafkaListenerContainerFactory"
+        )
     fun listen(matched: Matched) {
         CoroutineScope(Dispatchers.IO).launch {
             consumeMatchedEvent(matched)
@@ -36,7 +41,7 @@ class KafkaMatchedEventConsumer(
     }
 
     private suspend fun consumeMatchedEvent(matched: Matched) {
-        val userSessions = redisUserSessionRepository.findBySessionId(matched.sessionIds)
+        val userSessions = redisSessionManagement.findBySessionId(matched.sessionIds)
 
         userSessions.forEach { session ->
             val uri = serverEndpoint(session)

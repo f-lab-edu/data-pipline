@@ -26,7 +26,6 @@ open class KafkaConsumerConfig(
     private val objectMapper: ObjectMapper,
     @Value("\${kafka.ip}") private val kafkaIp: String,
     @Value("\${kafka.port}") private val kafkaPort: String,
-    @Value("\${kafka.topic.match-group}") private val matchGroup: String,
 ) {
     @Bean
     open fun consumerFactory(): ConsumerFactory<String, Matched> {
@@ -36,7 +35,6 @@ open class KafkaConsumerConfig(
 
         val props = mapOf(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
-            ConsumerConfig.GROUP_ID_CONFIG to matchGroup,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
             ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java
