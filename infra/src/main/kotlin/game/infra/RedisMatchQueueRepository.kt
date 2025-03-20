@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 open class RedisMatchQueueRepository(
-    @Qualifier("reactiveStringRedisTemplate")
+    @Qualifier("reactiveRedisStringTemplate")
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
     @Value("\${spring.data.redis.match-queue-key}") private val redisMatchQueue: String
 ) : MatchQueueRepository {
