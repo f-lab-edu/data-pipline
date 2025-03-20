@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
-@Profile("consumer-local")
+@Profile("consumer-local | consumer-prod")
 @Component
 @Import(ObjectConfig::class)
 class KafkaMatchedEventConsumer(
@@ -31,7 +31,7 @@ class KafkaMatchedEventConsumer(
     @KafkaListener(
         topics = ["\${kafka.topic.match-start}"],
         groupId = "\${kafka.group.match-start-group}",
-        containerFactory = "movedKafkaListenerContainerFactory"
+        containerFactory = "matchedKafkaListenerContainerFactory"
         )
     fun listen(matched: Matched) {
         CoroutineScope(Dispatchers.IO).launch {

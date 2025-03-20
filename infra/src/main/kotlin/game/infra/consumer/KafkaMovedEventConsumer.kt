@@ -2,7 +2,6 @@ package game.infra.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import com.game.dto.v1.maching.Matched
 import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +17,7 @@ import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
-@Profile("consumer-local")
+@Profile("consumer-local | consumer-prod")
 @Component
 @Import(ObjectConfig::class)
 class KafkaMovedEventConsumer(

@@ -18,7 +18,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 import org.springframework.kafka.support.serializer.JsonDeserializer
 
-@Profile("consumer-local")
+@Profile("consumer-local | consumer-prod")
 @Configuration
 @EnableKafka
 @Import(ObjectConfig::class)
