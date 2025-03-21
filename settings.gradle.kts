@@ -5,3 +5,5 @@ rootProject.name = "data-pipeline"
 
 include("game-server")
 include("pipeline")
+include("core")
+include("consumer")

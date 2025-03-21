@@ -1,4 +1,4 @@
-package game.server.core.dto
+package game.server.game.dto.v1.request
 
 sealed class ApiRequest<T>(
     open val type: String,

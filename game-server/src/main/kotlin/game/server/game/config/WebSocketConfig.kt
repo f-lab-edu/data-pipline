@@ -1,6 +1,6 @@
-package game.server.core.config
+package game.server.game.config
 
-import game.server.core.controller.WebSocketController
+import game.server.game.controller.WebSocketController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile

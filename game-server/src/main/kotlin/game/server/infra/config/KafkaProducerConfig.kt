@@ -1,16 +1,20 @@
-package game.server.core.config
+package game.server.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.game.config.ObjectConfig
+import game.server.lobby.dto.v1.response.Matched
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.kafka.support.serializer.JsonSerializer
 import reactor.kafka.sender.SenderOptions
 
 @Configuration
+@Import(ObjectConfig::class)
 open class KafkaProducerConfig(
     private val objectMapper: ObjectMapper,
     @Value("\${kafka.ip}") private val kafkaIp: String,
@@ -18,9 +22,9 @@ open class KafkaProducerConfig(
 ) {
 
     @Bean
-    open fun reactiveKafkaProducerTemplate(): ReactiveKafkaProducerTemplate<String, Any> {
-        val jsonSerializer = JsonSerializer<Any>(objectMapper)
-        val senderOptions = SenderOptions.create<String, Any>(producerProps())
+    open fun reactiveKafkaProducerTemplate(): ReactiveKafkaProducerTemplate<String, Matched> {
+        val jsonSerializer = JsonSerializer<Matched>(objectMapper)
+        val senderOptions = SenderOptions.create<String, Matched>(producerProps())
             .withValueSerializer(jsonSerializer)
         return ReactiveKafkaProducerTemplate(senderOptions)
     }
