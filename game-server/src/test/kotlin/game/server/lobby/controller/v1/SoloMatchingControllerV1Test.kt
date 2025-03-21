@@ -3,7 +3,8 @@ package game.server.lobby.controller.v1
 import game.server.lobby.config.TestSecurityConfig
 import game.server.lobby.domain.match.MatchType
 import game.server.lobby.dto.v1.response.MatchResponseDto
-import game.server.lobby.service.v1.SoloMatchingServiceV1
+import game.server.lobby.dto.v1.response.Matched
+import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
-@WebFluxTest
+@WebFluxTest(SoloMatchingControllerV1::class)
 @ActiveProfiles("test")
 @Import(TestSecurityConfig::class)
 class SoloMatchingControllerV1Test {
@@ -30,7 +31,7 @@ class SoloMatchingControllerV1Test {
     @Test
     fun `요청 헤더의 Session-Id를 기반으로 솔로매칭 응답을 확인한다`() {
         val sessionId = "test-user"
-        val matchResultDto = MatchResponseDto(
+        val matchResultDto = Matched(
             matchId = "test-match",
             sessionIds = listOf(sessionId),
             matchType = MatchType.SOLO
@@ -39,7 +40,6 @@ class SoloMatchingControllerV1Test {
         runBlocking {
             given(soloMatchingService.requestMatch(sessionId)).willReturn(matchResultDto)
         }
-
 
         webTestClient.post()
             .uri("/api/v1/match/solo")

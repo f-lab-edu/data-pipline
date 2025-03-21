@@ -1,7 +1,7 @@
 package game.server.lobby.controller.v1
 
 import game.server.lobby.dto.v1.response.MatchResponseDto
-import game.server.lobby.service.v1.SoloMatchingServiceV1
+import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
 import kotlinx.coroutines.reactor.mono
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
