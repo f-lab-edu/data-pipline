@@ -1,8 +1,9 @@
-package game.server.infra.config
+package game.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import game.server.lobby.dto.v1.response.Matched
+import com.game.dto.v1.maching.Matched
+import com.game.dto.v1.move.PlayerMoved
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
@@ -25,6 +26,14 @@ open class KafkaProducerConfig(
     open fun reactiveKafkaProducerTemplate(): ReactiveKafkaProducerTemplate<String, Matched> {
         val jsonSerializer = JsonSerializer<Matched>(objectMapper)
         val senderOptions = SenderOptions.create<String, Matched>(producerProps())
+            .withValueSerializer(jsonSerializer)
+        return ReactiveKafkaProducerTemplate(senderOptions)
+    }
+
+    @Bean
+    open fun kafkaTemplatePlayerMoved(): ReactiveKafkaProducerTemplate<String, PlayerMoved> {
+        val jsonSerializer = JsonSerializer<PlayerMoved>(objectMapper)
+        val senderOptions = SenderOptions.create<String, PlayerMoved>(producerProps())
             .withValueSerializer(jsonSerializer)
         return ReactiveKafkaProducerTemplate(senderOptions)
     }

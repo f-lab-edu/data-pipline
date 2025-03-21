@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Survival RPG Game</title>
   <style>
     body, html {
@@ -10,15 +10,35 @@
       padding: 0;
       height: 100%;
     }
+    /* 로비 영역과 게임 영역 기본 설정 */
+    #lobby {
+      display: block;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #gameContainer {
+      display: none;
+    }
     canvas {
       display: block;
-      margin: 0 auto;
+      margin: 20px auto;
       background: #000;
     }
   </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="800" height="600"></canvas>
-<script src="js/gameClient.js"></script>
+<!-- 로비 영역 -->
+<div id="lobby">
+  <button id="multiMatchBtn">멀티 매칭 시작</button>
+  <span id="statusMessage"></span>
+</div>
+
+<!-- 게임 영역 -->
+<div id="gameContainer">
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+</div>
+
+<!-- 자바스크립트 파일들: 로비 및 게임 클라이언트 -->
+<script src="js/lobbyClient.js"></script>
 </body>
 </html>

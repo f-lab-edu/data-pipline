@@ -1,4 +1,4 @@
-package game.server.lobby.service.v1.matching
+package com.game.service.v1.matching
 
 interface MatchQueueRepository {
     suspend fun addWaitingSessionIfNotExists(sessionId: String)

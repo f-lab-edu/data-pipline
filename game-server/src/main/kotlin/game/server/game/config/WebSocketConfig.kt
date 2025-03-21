@@ -1,5 +1,6 @@
 package game.server.game.config
 
+import game.server.game.controller.KafkaEventController
 import game.server.game.controller.WebSocketController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,7 +10,7 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 
 @Configuration
-@Profile("local")
+@Profile("local | prod")
 open class WebSocketConfig : WebFluxConfigurer {
 
     @Bean
@@ -19,6 +20,14 @@ open class WebSocketConfig : WebFluxConfigurer {
                 urlMap = mapOf("/ws/game" to gameRequestRouter)
                 order = 0
             }
+    }
+
+    @Bean
+    open fun internalWebSocketHandlerMapping(matchedEventController: KafkaEventController): SimpleUrlHandlerMapping {
+        return SimpleUrlHandlerMapping().apply {
+            urlMap = mapOf("/internal-websocket" to matchedEventController)
+            order = 1
+        }
     }
 
     @Bean

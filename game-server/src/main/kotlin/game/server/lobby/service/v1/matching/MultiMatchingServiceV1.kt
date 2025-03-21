@@ -1,9 +1,11 @@
 package game.server.lobby.service.v1.matching
 
-import game.server.lobby.domain.match.MatchType
-import game.server.lobby.dto.v1.response.MatchResponseDto
-import game.server.lobby.dto.v1.response.Matched
-import game.server.lobby.dto.v1.response.Waiting
+import com.game.service.v1.matching.MatchEventPublisher
+import com.game.service.v1.matching.MatchQueueRepository
+import com.game.dto.v1.maching.MatchType
+import com.game.dto.v1.maching.MatchResponseDto
+import com.game.dto.v1.maching.Matched
+import com.game.dto.v1.maching.Waiting
 import game.server.lobby.service.v1.matching.util.MatchIdGenerator
 import org.springframework.stereotype.Service
 

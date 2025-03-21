@@ -7,15 +7,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 @Component
-class MonsterManager(
-    private val player: Player
-) {
+class MonsterManager {
 
     private val monsters: MutableMap<String, Monster> = ConcurrentHashMap()
 
     fun addEnemy(monster: Monster) {
         monster.also {
-            it.initializeAI(player)
+//            it.initializeAI(player)
             monsters[monster.id] = it
         }
     }

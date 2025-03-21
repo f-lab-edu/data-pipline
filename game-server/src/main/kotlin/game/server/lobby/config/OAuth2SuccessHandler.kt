@@ -1,7 +1,10 @@
 package game.server.lobby.config
 
-import game.server.lobby.service.SessionManagementService
+import com.game.dto.v1.UserDto
+import com.game.service.v1.SessionManagement
+import game.server.lobby.service.UserService
 import kotlinx.coroutines.reactor.mono
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
@@ -10,11 +13,20 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.net.URI
+import java.time.Duration
 
+
+private object SessionConstants {
+    const val SESSION_PREFIX = "session:"
+    val SESSION_TTL: Duration = Duration.ofHours(1)
+}
 
 @Component
 class OAuth2SuccessHandler(
-    private val sessionManagement: SessionManagementService
+    private val sessionManagement: SessionManagement,
+    private val userService: UserService,
+    @Value("\${server.ip}") private val serverIp: String,
+    @Value("\${server.port}") private val serverPort: String
 ) : ServerAuthenticationSuccessHandler {
 
     override fun onAuthenticationSuccess(
@@ -27,13 +39,24 @@ class OAuth2SuccessHandler(
             val email = getEmail(attributes)
             val name = getName(attributes)
 
-            val persistedUser = sessionManagement.retrieveOrCreateUser(provider, providerId, email, name)
-            val sessionId = sessionManagement.handleUserSession(persistedUser)
-
+            val persistedUserDto = userService.retrieveOrCreateUser(provider, providerId, email, name)
+            val sessionKey = getSessionKey(persistedUserDto)
+            val sessionId =
+                sessionManagement.handleUserSession(
+                    persistedUserDto,
+                    sessionKey,
+                    SessionConstants.SESSION_TTL,
+                    serverIp,
+                    serverPort
+                )
             sessionId
         }.flatMap { sessionId ->
             redirectToLobby(webFilterExchange, sessionId)
         }
+
+    private fun getSessionKey(user: UserDto): String {
+        return "${SessionConstants.SESSION_PREFIX}${user.providerId}"
+    }
 
     private fun redirectToLobby(
         webFilterExchange: WebFilterExchange,
@@ -41,7 +64,7 @@ class OAuth2SuccessHandler(
     ): Mono<Void> {
         return with(webFilterExchange.exchange.response) {
             statusCode = HttpStatus.FOUND
-            headers.location = URI.create("http://localhost:8080/lobby.html?sessionId=$sessionId")
+            headers.location = URI.create("http://$serverIp:$serverPort/index.html?sessionId=$sessionId")
             setComplete()
         }
     }
@@ -53,7 +76,6 @@ class OAuth2SuccessHandler(
             ?: throw IllegalArgumentException("OAuth2AuthenticationToken has no principal")
         return Pair(oauthToken.authorizedClientRegistrationId, oauthUser.attributes)
     }
-
 
     private fun generateProviderId(provider: String, attrs: Map<String, Any>): String =
         OAuth2Provider.from(provider).extractProviderId(attrs)

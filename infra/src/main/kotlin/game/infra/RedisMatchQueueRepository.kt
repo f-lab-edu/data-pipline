@@ -1,6 +1,6 @@
-package game.server.infra
+package game.infra
 
-import game.server.lobby.service.v1.matching.MatchQueueRepository
+import com.game.service.v1.matching.MatchQueueRepository
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingle
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 open class RedisMatchQueueRepository(
-    @Qualifier("reactiveStringRedisTemplate")
+    @Qualifier("reactiveRedisStringTemplate")
     private val redisTemplate: ReactiveRedisTemplate<String, String>,
     @Value("\${spring.data.redis.match-queue-key}") private val redisMatchQueue: String
 ) : MatchQueueRepository {
