@@ -5,7 +5,6 @@ import game.server.game.controller.WebSocketController
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
@@ -20,14 +19,6 @@ open class WebSocketConfig : WebFluxConfigurer {
             .apply {
                 urlMap = mapOf("/ws/game" to gameRequestRouter)
                 order = 0
-                setCorsConfigurations(mapOf(
-                    "/ws/**" to CorsConfiguration().apply {
-                        allowedOriginPatterns = listOf("*")
-                        allowedMethods = listOf("GET", "POST")
-                        allowCredentials = true
-                        allowedHeaders = listOf("Sec-WebSocket-Protocol", "sessionId")
-                    })
-                )
             }
     }
 
