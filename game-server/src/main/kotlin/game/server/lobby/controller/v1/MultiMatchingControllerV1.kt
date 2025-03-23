@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/match")
-class MultiMatchingControllerV1(
+open class MultiMatchingControllerV1(
     private val multiMatchingService: MultiMatchingServiceV1
 ) {
 
     @PostMapping("/multi", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
-    suspend fun requestMultiMatch(@RequestHeader(SESSION_ID_HEADER) sessionId: String): MatchResponseDto =
+    open suspend fun requestMultiMatch(@RequestHeader(SESSION_ID_HEADER) sessionId: String): MatchResponseDto =
         multiMatchingService.requestMatch(sessionId)
 
 
     @DeleteMapping("/multi", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
-    suspend fun cancelMultiMatch(@RequestHeader(SESSION_ID_HEADER) sessionId: String): Unit =
+    open suspend fun cancelMultiMatch(@RequestHeader(SESSION_ID_HEADER) sessionId: String): Unit =
         multiMatchingService.cancelMatch(sessionId)
 }
