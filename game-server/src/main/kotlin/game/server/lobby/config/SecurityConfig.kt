@@ -16,14 +16,10 @@ open class SecurityConfig(
     @Bean
     open fun springWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
-            .csrf { csrf -> csrf.disable()}
+            .csrf { csrf -> csrf.disable() }
             .authorizeExchange { authorize ->
-                authorize.pathMatchers("/login/**", "/oauth2/**", "/internal-websocket").permitAll()
-                authorize.anyExchange().authenticated()
+                authorize.anyExchange().permitAll()
             }
-            .formLogin { it.loginPage("/login") }
-            .oauth2Login { oauth2 ->
-                oauth2.authenticationSuccessHandler(oAuth2SuccessHandler)
-            }.build()
+            .build()
     }
 }
