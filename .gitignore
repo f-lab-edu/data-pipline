@@ -17,3 +17,5 @@ logs
 **/**/*.yml
 
 **/Dockerfile*
+**.sql
+node_modules
