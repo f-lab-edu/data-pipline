@@ -6,7 +6,7 @@ import game.infra.r2dbc.entity.UserEntity
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
-@Profile("local | prod")
+@Profile("local | prod | performance-test")
 @Repository
 open class R2dbcUserRepository(
     private val delegate: SpringDataUserRepository

@@ -11,7 +11,7 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 
 @Configuration
-@Profile("local | prod")
+@Profile("local | prod | performance-test")
 open class WebSocketConfig : WebFluxConfigurer {
 
     @Bean
