@@ -24,7 +24,7 @@ jobs:
 
       - name: Create application-performance-test.yml from secret
         run: |
-          echo "${{ secrets.APPLICATION_PERFORMANCE_TEST_YML_BASE64 }}" | base64 -d > game-server/src/main/resources/application-performance-test.yml
+          echo "${{ secrets.APPLICATION_PERFORMANCE_TEST_YML }}" | base64 -d > game-server/src/main/resources/application-performance-test.yml
           
 
       - name: Debug check created YAML file
@@ -58,5 +58,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker rm -f game-test
+            docker rmi ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
             docker compose -f docker-compose-test.yml pull game-test
             docker compose -f docker-compose-test.yml up -d game-test
