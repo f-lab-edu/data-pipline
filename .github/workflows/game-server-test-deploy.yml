@@ -1,4 +1,4 @@
-name: Game Server test Module CD
+name: Game Server test version
 
 on:
   push:
