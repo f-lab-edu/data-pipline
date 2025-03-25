@@ -24,12 +24,13 @@ jobs:
 
       - name: Create application-performance-test.yml from secret
         run: |
-          echo "${{ secrets.APPLICATION_PERFORMANCE_TEST_YML }}" | base64 -d > game-server/src/main/resources/application-performance-test.yml
-          
+          echo "${{ secrets.APPLICATION_PERFORMANCE_TEST_YML }}" > game-server/src/main/resources/application-performance-test.yml
 
-      - name: Debug check created YAML file
-        run: cat game-server/src/main/resources/application-performance-test.yml
-
+      - name: Verify generated YML file path and content (debug)
+        run: |
+          ls -l game-server/src/main/resources/
+          cat game-server/src/main/resources/application-performance-test.yml
+      
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
 
