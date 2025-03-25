@@ -28,6 +28,12 @@ jobs:
       - name: Build Game Module (Spring Boot Jar)
         run: ./gradlew :game-server:clean :game-server:build
 
+      - name: 로그인하여 Docker 이미지 빌드 및 푸시
+        uses: docker/build-push-action@v5
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
       - name: Docker build and push (Game Server)
         uses: docker/build-push-action@v5
         with:
