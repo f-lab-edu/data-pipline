@@ -34,7 +34,7 @@ jobs:
           context: ./game-server
           file: ./game-server/Dockerfile-server
           push: true
-          tags: ${{ screts.DOCKER_HUB_GAME_ROSITORY }}:test
+          tags: ${{ secrets.DOCKER_HUB_GAME_ROSITORY }}:test
 
       - name: Deploy using docker-compose (Game Server only)
         uses: appleboy/ssh-action@v1.0.0
