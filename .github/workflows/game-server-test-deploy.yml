@@ -49,5 +49,5 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker compose -f docker-compose-test.yml pull ${{ secrets.DOCKER_HUB_GAME_ROSITORY }}:test
-            docker compose -f docker-compose-test.yml up -d ${{ secrets.DOCKER_HUB_GAME_ROSITORY }}:test
+            docker compose -f docker-compose-test.yml pull game-test
+            docker compose -f docker-compose-test.yml up -d game-test
