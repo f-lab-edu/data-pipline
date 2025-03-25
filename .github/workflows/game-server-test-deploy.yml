@@ -6,6 +6,8 @@ on:
       - perf/performance-test-improvements
     paths:
       - 'game-server/**'
+      - '.github/workflows/game-server-test-deploy.yml'
+  workflow_dispatch:
 
 jobs:
   deploy:
