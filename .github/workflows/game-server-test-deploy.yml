@@ -30,7 +30,11 @@ jobs:
         run: |
           ls -l game-server/src/main/resources/
           cat game-server/src/main/resources/application-performance-test.yml
-      
+
+      - name: Base64 encode created file for verification (temporary debugging)
+        run: |
+          base64 game-server/src/main/resources/application-performance-test.yml
+
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
 
