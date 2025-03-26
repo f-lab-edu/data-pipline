@@ -56,5 +56,5 @@ jobs:
             
             docker rm -f consumer || true
             docker rmi ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest
-            docker compose -f docker-compose.yml pull consumer
-            docker compose -f docker-compose.yml up -d consumer
+            docker-compose -f docker-compose.yml pull consumer
+            docker-compose -f docker-compose.yml up -d consumer
