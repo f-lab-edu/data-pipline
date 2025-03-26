@@ -1,4 +1,4 @@
-name: Game Server test version
+name: consumer deploy
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
       - name: Grant execute permission for Gradle Wrapper
         run: chmod +x ./gradlew
 
-      - name: Build Game Module (Spring Boot Jar)
+      - name: Build Consumer Module (Spring Boot Jar)
         run: ./gradlew :consumer:clean :consumer:build
 
       - name: login to docker hub
@@ -34,15 +34,15 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Docker build and push (Game Server)
+      - name: Docker build and push (consumer)
         uses: docker/build-push-action@v5
         with:
-          context: ./game-server
+          context: ./consumer
           file: ./consumer/Dockerfile-consumer
           push: true
           tags: ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest
 
-      - name: Deploy Game Server using docker-compose
+      - name: Deploy consumer using docker-compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.CONSUMER_HOST }}
