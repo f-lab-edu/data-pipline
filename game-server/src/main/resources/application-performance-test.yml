@@ -1,4 +1,8 @@
 spring:
+  config:
+    activate:
+      on-profile: performance-test
+
   r2dbc:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
