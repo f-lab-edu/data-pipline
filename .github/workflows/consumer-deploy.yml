@@ -42,6 +42,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest
 
+      - name: Verify Docker Image on Docker Hub
+        run: |
+          curl -s -u ${{ secrets.DOCKER_HUB_USERNAME }}:${{ secrets.DOCKER_HUB_PASSWORD }} https://registry.hub.docker.com/v2/repositories/${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}/tags/latest/
+
       - name: Deploy consumer using docker-compose
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -56,6 +60,6 @@ jobs:
             export CONSUMER_PORT=${{ secrets.CONSUMER_PORT }}
             
             docker rm -f consumer || true
-            docker rmi ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest
+            docker rmi ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest || true
             docker-compose -f docker-compose.yml pull consumer
             docker-compose -f docker-compose.yml up -d consumer
