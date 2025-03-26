@@ -40,7 +40,7 @@ jobs:
           context: ./game-server
           file: ./game-server/Dockerfile-server
           push: true
-          tags: ${{ secrets.DOCKER_HUB_GAME_ROSITORY }}:test
+          tags: ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
 
       - name: Deploy Game Server using docker-compose
         uses: appleboy/ssh-action@v1.0.0
@@ -59,7 +59,7 @@ jobs:
             export SERVER_HOST=${{ secrets.SERVER_HOST }}
             export SERVER_PORT=${{ secrets.SERVER_PORT }}
             
-            docker rm -f game-test
+            docker rm -f game-test || true
             docker rmi ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
             docker compose -f docker-compose-test.yml pull game-test
             docker compose -f docker-compose-test.yml up -d game-test
