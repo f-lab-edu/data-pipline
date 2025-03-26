@@ -6,8 +6,6 @@ spring:
     pool:
       max-size: 50
       validation-query: "SELECT 1"
----
-spring:
   data:
     redis:
       host: ${REDIS_HOST}
@@ -21,7 +19,6 @@ kafka:
     match-start: match-start
     player-move: player-move
 
----
 server:
   ip: ${SERVER_IP}
   port: ${SERVER_PORT}
