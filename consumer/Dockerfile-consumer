@@ -1,0 +1,14 @@
+FROM openjdk:17-alpine
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+
+ARG JAR_FILE=build/libs/consumer-1.0.0.jar
+COPY ${JAR_FILE} /app/consumer.jar
+
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+ENTRYPOINT ["java", "-jar", "/app/consumer.jar"]

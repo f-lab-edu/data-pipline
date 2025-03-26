@@ -1,0 +1,20 @@
+server:
+  port: ${CONSUMER_PORT}
+
+---
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      match-queue-key: multi_match_queue
+
+kafka:
+  ip: ${KAFKA_IP}
+  port: ${KAFKA_PORT}
+  topic:
+    match-start: match-start
+    player-move: player-move
+  group:
+    match-start-group: match-start-group-1
+    player-move-group: player-move-group-1
