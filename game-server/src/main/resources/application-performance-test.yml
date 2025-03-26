@@ -1,0 +1,27 @@
+spring:
+  r2dbc:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    pool:
+      max-size: 50
+      validation-query: "SELECT 1"
+---
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      match-queue-key: multi_match_queue
+
+kafka:
+  ip: ${KAFKA_IP}
+  port: ${KAFKA_PORT}
+  topic:
+    match-start: match-start
+    player-move: player-move
+
+---
+server:
+  ip: ${SERVER_IP}
+  port: ${SERVER_PORT}

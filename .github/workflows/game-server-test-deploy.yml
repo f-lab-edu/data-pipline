@@ -55,13 +55,23 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_GAME_ROSITORY }}:test
 
-      - name: Deploy using docker-compose (Game Server only)
+      - name: Deploy Game Server using docker-compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export MYSQL_URL=${{ secrets.MYSQL_URL }}
+            export MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            export REDIS_HOST=${{ secrets.REDIS_HOST }}
+            export REDIS_PORT=${{ secrets.REDIS_PORT }}
+            export KAFKA_IP=${{ secrets.KAFKA_IP }}
+            export KAFKA_PORT=${{ secrets.KAFKA_PORT }}
+            export SERVER_HOST=${{ secrets.SERVER_HOST }}
+            export SERVER_PORT=${{ secrets.SERVER_PORT }}
+            
             docker rm -f game-test
             docker rmi ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
             docker compose -f docker-compose-test.yml pull game-test
