@@ -53,6 +53,7 @@ jobs:
             export REDIS_PORT=${{ secrets.REDIS_PORT }}
             export KAFKA_IP=${{ secrets.KAFKA_IP }}
             export KAFKA_PORT=${{ secrets.KAFKA_PORT }}
+            export CONSUMER_PORT=${{ secrets.CONSUMER_PORT }}
             
             docker rm -f consumer || true
             docker rmi ${{ secrets.DOCKER_HUB_CONSUMER_REPOSITORY }}:latest
