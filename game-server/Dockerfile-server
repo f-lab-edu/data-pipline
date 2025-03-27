@@ -11,4 +11,4 @@ RUN chown -R appuser:appgroup /app
 
 USER appuser
 
-ENTRYPOINT ["java","-Xms512m", "-Xmx512m", "-jar", "/app/game-server.jar"]
+ENTRYPOINT ["java","-jar", "/app/game-server.jar"]
