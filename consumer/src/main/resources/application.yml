@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+---
+spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      match-queue-key: multi_match_queue
+
+kafka:
+  ip: ${KAFKA_IP}
+  port: ${KAFKA_PORT}
+  topic:
+    match-start: match-start
+    player-move: player-move
+  group:
+    match-start-group: match-start-group-0
+    player-move-group: player-move-group-0
