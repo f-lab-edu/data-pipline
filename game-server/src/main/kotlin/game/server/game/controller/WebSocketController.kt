@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketMessage
 import org.springframework.web.reactive.socket.WebSocketSession
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
@@ -32,17 +33,20 @@ class WebSocketController(
         sessionManager.register(sessionKey, socket)
 
         val socketScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+        val initialMessage = Mono.just(socket.textMessage("""{"type":"SERVER_READY"}"""))
+
         val outputFlux = socket.receive()
             .map { message ->
                 message.payloadAsText
             }
             .asFlow()
-            .flatMapMerge(concurrency = 50) { payloadText ->
+            .flatMapMerge(concurrency = 20) { payloadText ->
                 handlePayload(socket, payloadText, socketScope)
             }
             .asFlux()
 
-        return socket.send(outputFlux)
+        val combinedFlux = Flux.concat(initialMessage, outputFlux)
+        return socket.send(combinedFlux)
             .doFinally {
                 logger.info("Session(${socket.id}) finished")
                 socketScope.cancel()
