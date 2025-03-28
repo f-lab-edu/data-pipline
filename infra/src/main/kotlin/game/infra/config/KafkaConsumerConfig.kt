@@ -17,6 +17,7 @@ import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 import org.springframework.kafka.support.serializer.JsonDeserializer
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient
 
 @Profile("consumer-local | consumer-prod")
 @Configuration
@@ -58,4 +59,10 @@ open class KafkaConsumerConfig(
     open fun movedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
         return createKafkaListenerContainerFactory(PlayerMoved::class.java)
     }
+
+    @Bean
+    open fun reactorNettyWebSocketClient(): ReactorNettyWebSocketClient {
+        return ReactorNettyWebSocketClient()
+    }
+
 }
