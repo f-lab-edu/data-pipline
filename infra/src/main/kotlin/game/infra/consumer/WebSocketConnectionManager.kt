@@ -5,6 +5,7 @@ import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.Matched
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Import(ObjectConfig::class)
 @Component
 class WebSocketConnectionManager(
+    @Qualifier("reactorNettyWebSocketClient")
     private val webSocketClient: ReactorNettyWebSocketClient,
     private val objectMapper: ObjectMapper
 ) {
