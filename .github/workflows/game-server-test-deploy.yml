@@ -26,7 +26,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Game Module (Spring Boot Jar)
-        run: ./gradlew :game-server:clean :game-server:build
+        run: ./gradlew :game-server:clean :game-server:build :infra:build
 
       - name: login to docker hub
         uses: docker/login-action@v3
