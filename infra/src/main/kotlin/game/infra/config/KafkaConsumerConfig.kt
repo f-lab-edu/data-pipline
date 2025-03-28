@@ -59,10 +59,4 @@ open class KafkaConsumerConfig(
     open fun movedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
         return createKafkaListenerContainerFactory(PlayerMoved::class.java)
     }
-
-    @Bean
-    open fun reactorNettyWebSocketClient(): ReactorNettyWebSocketClient {
-        return ReactorNettyWebSocketClient()
-    }
-
 }
