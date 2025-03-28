@@ -6,6 +6,7 @@ import com.game.dto.v1.maching.Matched
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketSession
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
+@Profile("consumer-local | consumer-prod")
 @Import(ObjectConfig::class)
 @Component
 class WebSocketConnectionManager(
