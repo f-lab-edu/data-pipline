@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
 ---
 spring:
   data:
@@ -8,6 +11,11 @@ spring:
       host: 127.0.0.1
       port: 6379
       match-queue-key: multi_match_queue
+
+  config:
+    activate:
+      on-profile:
+        local
 
 kafka:
   ip: ${KAFKA_IP}
