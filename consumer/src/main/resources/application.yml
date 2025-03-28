@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local}
+    active: ${SPRING_PROFILES_ACTIVE:consumer-local}
 ---
 spring:
   data:
@@ -15,7 +15,7 @@ spring:
   config:
     activate:
       on-profile:
-        local
+        consumer-local
 
 kafka:
   ip: ${KAFKA_IP}
