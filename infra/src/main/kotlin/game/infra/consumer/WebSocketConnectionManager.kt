@@ -2,10 +2,11 @@ package game.infra.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import com.game.dto.v1.maching.Matched
+import com.game.dto.v1.maching.KafkaEvent
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketSession
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient
@@ -13,6 +14,8 @@ import reactor.core.publisher.Mono
 import java.net.URI
 import java.util.concurrent.ConcurrentHashMap
 
+
+@Profile("consumer-local | consumer-prod")
 @Import(ObjectConfig::class)
 @Component
 class WebSocketConnectionManager(
@@ -21,9 +24,9 @@ class WebSocketConnectionManager(
 ) {
     private val connectionMonos = ConcurrentHashMap<URI, Mono<WebSocketSession>>()
 
-    suspend fun send(uri: URI, matched: Matched) {
+    suspend fun send(uri: URI, event: KafkaEvent) {
         val session = getSession(uri)
-        session.send(Mono.just(session.textMessage(serialize(matched)))).awaitSingleOrNull()
+        session.send(Mono.just(session.textMessage(serialize(event)))).awaitSingleOrNull()
     }
 
     private suspend fun getSession(uri: URI): WebSocketSession {
@@ -50,7 +53,7 @@ class WebSocketConnectionManager(
         }
     }
 
-    private fun serialize(matched: Matched): String {
-        return objectMapper.writeValueAsString(matched)
+    private fun serialize(event: KafkaEvent): String {
+        return objectMapper.writeValueAsString(event)
     }
 }
