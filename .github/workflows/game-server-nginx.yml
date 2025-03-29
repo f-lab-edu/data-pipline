@@ -61,6 +61,8 @@ jobs:
             
             docker rm -f game-test || true
             docker rm -f game-test2 || true
+            docker rm -f nginx-lb || true
+
             docker rmi ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
             docker compose -f docker-compose-nginx.yml pull game-test
-            docker compose -f docker-compose-nginx.yml up -d game-test
+             docker compose -f docker-compose-nginx.yml up -d --build
