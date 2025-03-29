@@ -1,0 +1,66 @@
+name: Game Server test version
+
+on:
+  push:
+    branches:
+      - perf/performance-test-improvements
+    paths:
+      - 'game-server/**'
+      - '.github/workflows/game-server-nginx.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: 17
+
+      - name: Grant execute permission for Gradle Wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build Game Module (Spring Boot Jar)
+        run: ./gradlew :game-server:clean :game-server:build :infra:build
+
+      - name: login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Docker build and push (Game Server)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./game-server
+          file: ./game-server/Dockerfile-server
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
+
+      - name: Deploy Game Server using docker-compose
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export MYSQL_URL=${{ secrets.MYSQL_URL }}
+            export MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}
+            export MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            export REDIS_HOST=${{ secrets.REDIS_HOST }}
+            export REDIS_PORT=${{ secrets.REDIS_PORT }}
+            export KAFKA_IP=${{ secrets.KAFKA_IP }}
+            export KAFKA_PORT=${{ secrets.KAFKA_PORT }}
+            export SERVER_HOST=${{ secrets.SERVER_HOST }}
+            export SERVER_PORT=${{ secrets.SERVER_PORT }}
+            
+            docker rm -f game-test || true
+            docker rm -f game-test2 || true
+            docker rmi ${{ secrets.DOCKER_HUB_GAME_REPOSITORY }}:test
+            docker compose -f docker-compose-nginx.yml pull game-test
+            docker compose -f docker-compose-nginx.yml up -d game-test
