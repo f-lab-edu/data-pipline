@@ -33,8 +33,6 @@ class WebSocketController(
         sessionManager.register(sessionKey, socket)
 
         val socketScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        val initialMessage = Mono.just(socket.textMessage("""{"type":"SERVER_READY"}"""))
-
         val outputFlux = socket.receive()
             .map { message ->
                 message.payloadAsText
@@ -45,8 +43,7 @@ class WebSocketController(
             }
             .asFlux()
 
-        val combinedFlux = Flux.concat(initialMessage, outputFlux)
-        return socket.send(combinedFlux)
+        return socket.send(outputFlux)
             .doFinally {
                 logger.info("Session(${socket.id}) finished")
                 socketScope.cancel()
