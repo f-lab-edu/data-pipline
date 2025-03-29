@@ -17,13 +17,14 @@ const wsMessageLatency = new Trend('ws_message_latency');
 
 export const options = {
     scenarios: {
-        stress_test: {
+        web_socket_limit_test: {
             executor: 'ramping-vus',
-            startVUs: 4,
+            startVUs: 5,
             stages: [
-                {target: 20, duration: '2m'},
-                {target: 50, duration: '3m'},
-                {target: 10, duration: '1m'},
+                {target: 20, duration: '1m'},
+                {target: 40, duration: '1m'},
+                {target: 50, duration: '2m'},
+                {target: 0, duration: '1m'},
             ],
             gracefulRampDown: '30s',
         },
@@ -42,7 +43,7 @@ export const options = {
 
         'player_moved_events_received': ['count>0'],
 
-        'ws_connect_duration': ['avg<200'],
+        'ws_connect_duration': ['avg<500', 'p(95)<1000', 'p(99)<2000', 'max<3000'],
         'ws_messages_received': ['count>0'],
         'ws_errors': ['count==0'],
         'ws_message_parse_errors': ['count==0'],
@@ -56,8 +57,6 @@ export const options = {
 export default function () {
     const sessionId = simpleUUID();
 
-    const wsStartTime = Date.now();
-    const ws = new WebSocket(`${WS_URL}?sessionId=${sessionId}`);
     let matchRes = http.post(MATCH_API_URL, JSON.stringify({}), {
         headers: {
             'Content-Type': 'application/json',
@@ -88,7 +87,8 @@ export default function () {
         console.warn(`[VU ${__VU}] 예상치 못한 매칭 상태: ${matchStatus}`);
     }
 
-
+    const wsStartTime = Date.now();
+    const ws = new WebSocket(`${WS_URL}?sessionId=${sessionId}`);
     ws.onopen = () => {
         const connectDuration = Date.now() - wsStartTime;
         wsConnectDuration.add(connectDuration);
