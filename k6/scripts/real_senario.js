@@ -16,14 +16,31 @@ const wsMessageLatency = new Trend('ws_message_latency');
 
 
 export const options = {
+    // scenarios: {
+    //     websocket_200_users_test: {
+    //         executor: 'ramping-vus',
+    //         startVUs: 10,
+    //         stages: [
+    //             {target: 50, duration: '2m'},
+    //             {target: 100, duration: '3m'},
+    //             {target: 150, duration: '3m'},
+    //             {target: 200, duration: '4m'},
+    //             {target: 200, duration: '5m'},
+    //             {target: 0, duration: '3m'},
+    //         ],
+    //         gracefulRampDown: '30s',
+    //     },
+    // },
     scenarios: {
-        web_socket_limit_test: {
+        websocket_200_users_test: {
             executor: 'ramping-vus',
-            startVUs: 5,
+            startVUs: 10,
             stages: [
-                {target: 20, duration: '1m'},
-                {target: 40, duration: '1m'},
-                {target: 50, duration: '2m'},
+                {target: 50, duration: '1m'},
+                {target: 100, duration: '1m'},
+                {target: 150, duration: '1m'},
+                {target: 200, duration: '2m'},
+                {target: 200, duration: '3m'},
                 {target: 0, duration: '1m'},
             ],
             gracefulRampDown: '30s',
@@ -43,7 +60,7 @@ export const options = {
 
         'player_moved_events_received': ['count>0'],
 
-        'ws_connect_duration': ['avg<500', 'p(95)<1000', 'p(99)<2000', 'max<3000'],
+        'ws_connect_duration': ['avg<1500', 'p(95)<2000', 'p(99)<2500', 'max<3000'],
         'ws_messages_received': ['count>0'],
         'ws_errors': ['count==0'],
         'ws_message_parse_errors': ['count==0'],
@@ -56,11 +73,20 @@ export const options = {
 
 export default function () {
     const sessionId = simpleUUID();
+    let vuIp = randomIp();
+
+    const wsStartTime = Date.now();
+    const ws = new WebSocket(`${WS_URL}?sessionId=${sessionId}`, null, {
+        headers: {
+            'X-Forwarded-For': vuIp,
+        }
+    });
 
     let matchRes = http.post(MATCH_API_URL, JSON.stringify({}), {
         headers: {
             'Content-Type': 'application/json',
-            'X-Session-Id': sessionId
+            'X-Session-Id': sessionId,
+            'X-Forwarded-For': vuIp,
         }
     });
     console.log(`[VU ${__VU}] matchRes.status=`, matchRes.status);
@@ -87,12 +113,12 @@ export default function () {
         console.warn(`[VU ${__VU}] 예상치 못한 매칭 상태: ${matchStatus}`);
     }
 
-    const wsStartTime = Date.now();
-    const ws = new WebSocket(`${WS_URL}?sessionId=${sessionId}`);
     ws.onopen = () => {
         const connectDuration = Date.now() - wsStartTime;
         wsConnectDuration.add(connectDuration);
         console.log(`[VU ${__VU}] WebSocket 연결 성공, 연결 시간: ${connectDuration}ms`);
+
+        const fpsInterval = 1000 / 60;
 
         setInterval(() => {
             const {x, y} = generatePosition();
@@ -104,8 +130,9 @@ export default function () {
                     speed: 5,
                 },
             }));
-        }, 250);
+        }, fpsInterval);
     };
+
 
     ws.onmessage = (msg) => {
         const receiveTime = Date.now();
@@ -158,3 +185,8 @@ function simpleUUID() {
         return v.toString(16);
     });
 }
+
+function randomIp() {
+    return `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+}
+
