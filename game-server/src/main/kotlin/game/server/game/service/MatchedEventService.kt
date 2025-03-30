@@ -22,6 +22,7 @@ class MatchedEventService(
         val message = objectMapper.writeValueAsString(matched)
 
         println("""
+            =================sessionIds==============================
             ${matched.sessionIds.mapNotNull { sessionManager.getSession(it) }}
         """.trimIndent())
         matched.sessionIds.mapNotNull { sessionKey ->
