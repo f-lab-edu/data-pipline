@@ -21,6 +21,9 @@ class MatchedEventService(
     suspend fun processMatchedEvent(matched: Matched) = coroutineScope {
         val message = objectMapper.writeValueAsString(matched)
 
+        println("""
+            ${matched.sessionIds.mapNotNull { sessionManager.getSession(it) }}
+        """.trimIndent())
         matched.sessionIds.mapNotNull { sessionKey ->
             sessionManager.getSession(sessionKey)
                 ?.also { webSocketSession ->
