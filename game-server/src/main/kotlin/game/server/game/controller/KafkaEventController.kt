@@ -32,7 +32,6 @@ class KafkaEventController(
 
 
     private suspend fun dispatchEvent(event: KafkaEvent) {
-        println("========================event : ${event.eventType}========================")
         when (event) {
             is Matched -> matchedEventService.processMatchedEvent(event)
             is PlayerMoved -> playerMovedEventService.processPlayerMovedEvent(event)
