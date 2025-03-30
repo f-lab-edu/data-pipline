@@ -1,62 +1,49 @@
-const socket = window.socket
+const socket = window.socket;
 if (!socket || socket.readyState !== WebSocket.OPEN) {
     throw new Error("게임 진입을 위한 웹소켓 연결이 없습니다. 로비 연결부터 다시 확인해주세요.");
 }
 
-
 const canvas = document.getElementById("gameCanvas");
 const context = canvas.getContext("2d");
 
-let otherPlayers = {}; // key: playerId, value: player object
-
-// 다른 유저 기본 색상
+let otherPlayers = {}; // 다른 플레이어 객체 목록
 const OTHER_PLAYER_COLOR = "orange";
-let player = { x: 400, y: 300, width: 20, height: 20, color: "blue" };
+
+let player = {
+    x: 400, y: 300, width: 20, height: 20, color: "blue", speed: 200
+};
+let lastSentTime = Date.now();
 
 let enemies = [];
-const enemyColors = {
-    Zergling: "green",
-    Hydralisk: "purple"
-};
+const enemyColors = {Zergling: "green", Hydralisk: "purple"};
 let round = 1;
-
-// WebSocket 연결 후 이벤트 처리
-socket.addEventListener("open", () => {
-    console.log("WebSocket 연결 성공!");
-});
 
 socket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     handleServerMessage(data);
 });
 
-socket.addEventListener("close", () => {
-    console.log("WebSocket 연결 종료");
-});
+socket.addEventListener("open", () => console.log("WebSocket 연결 성공!"));
+socket.addEventListener("close", () => console.log("WebSocket 연결 종료"));
+socket.addEventListener("error", (error) => console.error("WebSocket 오류:", error));
 
-socket.addEventListener("error", (error) => {
-    console.error("WebSocket 오류:", error);
-});
-
-// 서버에서 수신된 메시지 처리 함수
 function handleServerMessage(response) {
     if (response.eventType === "PLAYER_MOVED") {
-        const { playerId, newPositionX, newPositionY } = response;
-
-        // 이미 존재하는지 체크
-        if (otherPlayers[playerId]) {
-            otherPlayers[playerId].x = newPositionX;
-            otherPlayers[playerId].y = newPositionY;
-        } else {
-            // 할당된 색상을 이용해서 플레이어 신규 추가
-            const assignedColor = window.playerColors[playerId] || "orange";
+        const {playerId, newPositionX, newPositionY} = response;
+        if (!otherPlayers[playerId]) {
+            const assignedColor = window.playerColors[playerId] || OTHER_PLAYER_COLOR;
             otherPlayers[playerId] = {
-                x: newPositionX,
-                y: newPositionY,
+                currentX: newPositionX,
+                currentY: newPositionY,
+                targetX: newPositionX,
+                targetY: newPositionY,
                 width: 20,
                 height: 20,
                 color: assignedColor
             };
+        } else {
+            otherPlayers[playerId].targetX = newPositionX;
+            otherPlayers[playerId].targetY = newPositionY;
         }
     }
 
@@ -101,32 +88,12 @@ function handleServerMessage(response) {
     }
 }
 
-// 플레이어 이동 요청 전송
-function sendPlayerMoveRequest(direction) {
-    const payload = {
-        type: "move",
-        data: {
-            currentPosition: { x: player.x, y: player.y },
-            direction: direction,
-            speed: 5
-        }
-    };
-
-    if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(payload));
-    }
-}
-
-// 키 이벤트 처리
+// 키 상태 처리
 const keys = {};
-document.addEventListener("keydown", (event) => {
-    keys[event.key] = true;
-});
-document.addEventListener("keyup", (event) => {
-    keys[event.key] = false;
-});
+document.addEventListener("keydown", (event) => keys[event.key] = true);
+document.addEventListener("keyup", (event) => keys[event.key] = false);
 
-// 현재 키 상태에 따른 방향 계산 함수
+// 방향 계산
 function getDirection() {
     if (keys["ArrowUp"]) return "UP";
     if (keys["ArrowDown"]) return "DOWN";
@@ -135,45 +102,88 @@ function getDirection() {
     return null;
 }
 
-// 게임 루프 함수
+// 보간함수
+function interpolate(current, target, deltaTime, speed = 10) {
+    return current + (target - current) * deltaTime * speed;
+}
+
+function sendPlayerMoveRequest(direction) {
+    const payload = {
+        type: "move", data: {
+            currentPosition: {x: player.x, y: player.y}, direction: direction, speed: 5
+        }
+    };
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(payload));
+    }
+}
+
+// 즉시 클라이언트 예측 이동
+function movePlayerPredictively(direction, deltaTime) {
+    switch (direction) {
+        case "UP":
+            player.y -= player.speed * deltaTime;
+            break;
+        case "DOWN":
+            player.y += player.speed * deltaTime;
+            break;
+        case "LEFT":
+            player.x -= player.speed * deltaTime;
+            break;
+        case "RIGHT":
+            player.x += player.speed * deltaTime;
+            break;
+    }
+
+    if ((Date.now() - lastSentTime) > 50) {
+        sendPlayerMoveRequest(direction);
+        lastSentTime = Date.now();
+    }
+}
+
+// 게임 렌더링 루프
+let lastRender = Date.now();
+
 function gameLoop() {
+    const now = Date.now();
+    const deltaTime = (now - lastRender) / 1000;
+    lastRender = now;
+
     const direction = getDirection();
     if (direction) {
-        sendPlayerMoveRequest(direction);
+        movePlayerPredictively(direction, deltaTime);
     }
-    renderScene();
+
+    for (const playerId in otherPlayers) {
+        const p = otherPlayers[playerId];
+        p.currentX = interpolate(p.currentX, p.targetX, deltaTime);
+        p.currentY = interpolate(p.currentY, p.targetY, deltaTime);
+    }
+
+    render();
     requestAnimationFrame(gameLoop);
 }
 
-// 게임 화면 렌더링 함수
-function renderScene() {
+function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 플레이어 본인 렌더링
+    // 내 플레이어 그리기
     context.fillStyle = player.color;
     context.fillRect(player.x, player.y, player.width, player.height);
 
-    // 다른 플레이어 렌더링 추가
-    Object.values(otherPlayers).forEach((otherPlayer) => {
-        context.fillStyle = otherPlayer.color;
-        context.fillRect(otherPlayer.x, otherPlayer.y, otherPlayer.width, otherPlayer.height);
-    });
+    // 다른 플레이어 그리기
+    for (const playerId in otherPlayers) {
+        const p = otherPlayers[playerId];
+        context.fillStyle = p.color;
+        context.fillRect(p.currentX, p.currentY, p.width, p.height);
+    }
 
-    // 적 렌더링
-    enemies.forEach((enemy) => {
+    // 적 그리기
+    enemies.forEach(enemy => {
         context.fillStyle = enemy.color;
         context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-
-        context.fillStyle = "red";
-        const healthBarWidth = (enemy.health / enemy.maxHealth) * enemy.width;
-        context.fillRect(enemy.x, enemy.y - 5, healthBarWidth, 3);
     });
-
-    context.fillStyle = "white";
-    context.font = "20px Arial";
-    context.fillText(`라운드: ${round}`, 10, 20);
 }
 
-
-// 게임 시작
-gameLoop();
+// 게임 루프 시작
+requestAnimationFrame(gameLoop);
