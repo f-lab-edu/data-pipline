@@ -9,8 +9,14 @@
 # 📗 Documentation
 [Wiki](https://github.com/f-lab-edu/data-pipline/wiki)
 
+# Play
+https://github.com/user-attachments/assets/791b4af4-bdf4-4631-8dbc-754004d2a9db
 
 # ⚙️ System Architecture
 
-<img src="https://github.com/user-attachments/assets/322792d5-4d92-426f-ae09-7ca0a659c969"  width="800" height="750"/>
+<img src="https://github.com/user-attachments/assets/322792d5-4d92-426f-ae09-7ca0a659c969"  width="900" height="650"/>
+
+
+
+
 
