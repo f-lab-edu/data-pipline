@@ -22,20 +22,13 @@ class KafkaEventController(
     private val playerMovedEventService: PlayerMovedEventService,
 ) : WebSocketHandler {
 
-    override fun handle(socket: WebSocketSession): Mono<Void> {
+    override fun handle(socket: WebSocketSession): Mono<Void> =
         socket.receive()
             .map(WebSocketMessage::getPayloadAsText)
             .flatMap { payload ->
                 val event = objectMapper.readValue(payload, KafkaEvent::class.java)
                 mono { dispatchEvent(event) }.then()
-            }
-            .then()
-
-        return socket.send(
-            Flux.interval(Duration.ofSeconds(20))
-                .map { socket.textMessage("KEEP_ALIVE") }
-        )
-    }
+            }.then()
 
 
     private suspend fun dispatchEvent(event: KafkaEvent) {
