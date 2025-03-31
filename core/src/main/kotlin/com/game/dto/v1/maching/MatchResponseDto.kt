@@ -7,8 +7,9 @@ data class Matched(
     val matchId: String,
     val sessionIds: List<String>,
     override val matchType: MatchType,
-    override val eventType: String = "MATCHED"
-) : MatchResponseDto(MatchStatus.MATCHED, matchType), KafkaEvent
+    override val eventType: String = "MATCHED",
+    override val status: MatchStatus = MatchStatus.MATCHED
+) : MatchResponseDto(status, matchType), KafkaEvent
 
 data class Waiting(
     override val matchType: MatchType
