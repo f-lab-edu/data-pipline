@@ -1,3 +1,8 @@
+logging:
+  level:
+    root: INFO
+    game.infra: DEBUG
+
 server:
   port: ${CONSUMER_PORT}
 
