@@ -1,13 +1,11 @@
 package game.infra.consumer
 
-import com.game.config.ObjectConfig
 import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -15,7 +13,6 @@ import java.net.URI
 
 @Profile("consumer-local | consumer-prod")
 @Component
-@Import(ObjectConfig::class)
 class KafkaMovedEventConsumer(
     private val redisSessionManagement: SessionManagement,
     private val webSocketConnectionManager: WebSocketConnectionManager,
@@ -26,7 +23,7 @@ class KafkaMovedEventConsumer(
     @KafkaListener(
         topics = ["\${kafka.topic.player-move}"],
         groupId = "\${kafka.group.player-move-group}",
-        containerFactory = "movedKafkaListenerContainerFactory"
+        containerFactory = "kafkaEventListenerContainerFactory"
     )
     fun listen(playerMoved: PlayerMoved) {
         CoroutineScope(Dispatchers.IO).launch {

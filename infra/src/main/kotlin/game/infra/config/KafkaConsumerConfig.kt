@@ -2,8 +2,7 @@ package game.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
-import com.game.dto.v1.maching.Matched
-import com.game.dto.v1.move.PlayerMoved
+import com.game.dto.v1.maching.KafkaEvent
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -31,13 +30,14 @@ open class KafkaConsumerConfig(
     private fun <T> createConsumerFactory(type: Class<T>): ConsumerFactory<String, T> {
         val jsonDeserializer = JsonDeserializer(type, objectMapper).apply {
             addTrustedPackages("*")
+            setUseTypeHeaders(false)
         }
 
         val props = mapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
-            ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java
+            ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java.name
         )
 
         return DefaultKafkaConsumerFactory(props, StringDeserializer(), jsonDeserializer)
@@ -50,12 +50,7 @@ open class KafkaConsumerConfig(
     }
 
     @Bean
-    open fun matchedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Matched> {
-        return createKafkaListenerContainerFactory(Matched::class.java)
-    }
-
-    @Bean
-    open fun movedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
-        return createKafkaListenerContainerFactory(PlayerMoved::class.java)
+    open fun kafkaEventListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, KafkaEvent> {
+        return createKafkaListenerContainerFactory(KafkaEvent::class.java)
     }
 }
