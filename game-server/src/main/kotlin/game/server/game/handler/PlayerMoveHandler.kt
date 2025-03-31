@@ -14,10 +14,12 @@ import game.server.game.dto.v1.response.ApiResponse
 import game.server.game.dto.v1.response.ErrorResponse
 import game.server.game.dto.v1.response.MoveResponseData
 import game.server.game.dto.v1.response.Response
+import game.server.game.service.RequestService
 import game.server.game.session.PlayerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketSession
 
@@ -30,16 +32,19 @@ class PlayerMoveHandler(
     private val movePublisher: MatchEventPublisher,
 ) : RequestHandler<PlayerMoveRequestData, MoveResponseData> {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     override val requestTypeReference: TypeReference<Request<PlayerMoveRequestData>> =
         object : TypeReference<Request<PlayerMoveRequestData>>() {}
 
     override fun handle(request: Request<PlayerMoveRequestData>, socket: WebSocketSession): ApiResponse<MoveResponseData> {
+        logger.info("{}", request)
         val player = playerManager.getPlayer(socket)
             ?: return ErrorResponse(type = "move", message = "Player not found")
-
+        logger.info("{}", request.data)
         val (currentX, currentY) = request.data.currentPosition
         val (newX, newY) = calculateNewPosition(currentX, currentY, request.data.direction, request.data.speed)
-
+        logger.info("{}", request.data.seq)
         return if (player.isMoveAllowed(newX, newY)) {
             player.position = Position(newX, newY)
 
