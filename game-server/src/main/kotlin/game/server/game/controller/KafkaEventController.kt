@@ -8,6 +8,7 @@ import game.server.game.service.MatchedEventService
 import game.server.game.service.PlayerMovedEventService
 import kotlinx.coroutines.reactor.mono
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketMessage
@@ -16,6 +17,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Duration
 
+@Import(ObjectMapper::class)
 @Controller
 class KafkaEventController(
     private val objectMapper: ObjectMapper,
