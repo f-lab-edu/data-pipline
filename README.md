@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/791b4af4-bdf4-4631-8dbc-754004d2a9db
 # 🗂️ 디렉터리 구조
 ```
 data-pipeline/
-├─ settings.gradle                   // 멀티 모듈 설정 (core, game-server, infra 포함)
+├─ settings.gradle                   // 멀티 모듈 설정 (core, game-server, infra, consumer 포함)
 ├─ build.gradle                      // 루트 공통 빌드 설정
 ├─ core/                             // 공통 도메인, DTO, 유틸리티 모듈
 │   ├─ build.gradle                  // core 모듈 의존성 및 설정
@@ -40,15 +40,20 @@ data-pipeline/
 │           ├─ controller/          // 게임 진행 관련 API
 │           └─ service/             // 게임 비즈니스 로직
 │   
-└─ infra/                            // 인프라 전용 모듈 (Kafka, Redis, MySQL 연동)
+├─ infra/                            // 인프라 전용 모듈 (Kafka producer, Redis, MySQL 연동)
+│   ├─ build.gradle                  
+│   └─ game.infra/            
+│       ├─ kafka/                   
+│       │   ├─ config/              // Kafka 설정 (프로듀서 전용)
+│       │   └─ producer/            // 메시지 발행 로직
+│       ├─ redis/                   
+│       │   └─ config/              // Redis 연결 및 세션 관리 설정
+│       └─   // MySQL Repository, DataSource 설정 등
+│       
+└─ consumer/                         // 신규 독립적 Kafka consumer 모듈
     ├─ build.gradle                  
-    └─ game.infra            
-        ├─ kafka/                   
-        │   ├─ config/              // Kafka 설정 (프로듀서, 컨슈머 등)
-        │   ├─ producer/            // 메시지 발행 로직
-        │   └─ consumer/            // 메시지 처리 로직
-        ├─ redis/                   
-        │   └─ config/              // Redis 연결 및 세션 관리 설정
-        └─   // MySQL Repository, DataSource 설정 등
+    └─ com.game/
+        └─ kafka/
+            ├─ config/              // Kafka consumer 설정
 
 ```
