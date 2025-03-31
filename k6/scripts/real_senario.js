@@ -13,6 +13,7 @@ const wsMessagesReceived = new Counter('ws_messages_received');
 const wsErrors = new Counter('ws_errors');
 const wsMessageParseErrors = new Counter('ws_message_parse_errors');
 const wsMessageLatency = new Trend('ws_message_latency');
+const wsMessageSequenceErrors = new Counter('ws_message_sequence_errors');
 
 
 export const options = {
@@ -71,9 +72,20 @@ export const options = {
     },
 };
 
+
+const WS_STATE = {
+    CONNECTING: 0,
+    OPEN: 1,
+    CLOSING: 2,
+    CLOSED: 3,
+};
+
+
 export default function () {
     const sessionId = simpleUUID();
     let vuIp = randomIp();
+    let sequenceNumber = 0;
+    let lastReceivedSequenceNumbers = {};
 
     const wsStartTime = Date.now();
     const ws = new WebSocket(`${WS_URL}?sessionId=${sessionId}`, null, {
@@ -99,8 +111,6 @@ export default function () {
         console.error(`[VU ${__VU}] JSON 파싱 중 오류: ${error}, 응답 본문: ${matchRes.body}`);
     }
     const matchStatus = jsonData.status;
-    let matchConfirmed = false;
-
     check(matchRes, {
         '매칭 요청 성공': (r) => r.status === 200 || r.status === 201,
     }) || (__ENV.abortOnFail && fail('매칭 요청 실패 발생, 테스트 중단'));
@@ -113,41 +123,58 @@ export default function () {
         console.warn(`[VU ${__VU}] 예상치 못한 매칭 상태: ${matchStatus}`);
     }
 
+    let interval;
     ws.onopen = () => {
         const connectDuration = Date.now() - wsStartTime;
         wsConnectDuration.add(connectDuration);
         console.log(`[VU ${__VU}] WebSocket 연결 성공, 연결 시간: ${connectDuration}ms`);
 
         const fpsInterval = 1000 / 60;
-
-        setInterval(() => {
+        interval = setInterval(() => {
+            if (ws.readyState !== WS_STATE.OPEN) {
+                console.warn(`[VU ${__VU}] 🚨 WebSocket이 열리지 않음(${ws.readyState}), interval 정지`);
+                clearInterval(interval);
+                return;
+            }
+            sequenceNumber++;
             const {x, y} = generatePosition();
-            ws.send(JSON.stringify({
-                type: 'move',
+            const moveMessage = JSON.stringify({
+                type: "move",
                 data: {
+                    seq: sequenceNumber,
+                    senderSessionId: sessionId,
+                    timestamp: Date.now(),
                     currentPosition: {x, y},
                     direction: getRandomDirection(),
                     speed: 5,
                 },
-            }));
+            });
+            ws.send(moveMessage);
         }, fpsInterval);
     };
 
-
     ws.onmessage = (msg) => {
-        const receiveTime = Date.now();
         try {
             const event = JSON.parse(msg.data);
-            if (event.timestamp) {
-                const latency = receiveTime - event.timestamp;
-                wsMessageLatency.add(latency);
-                console.log(`[VU ${__VU}] 메시지 지연시간: ${latency}ms`);
-            }
-
-            wsMessagesReceived.add(1);
             if (event.eventType === "PLAYER_MOVED") {
+                wsMessagesReceived.add(1);
+
+                const receiveTime = Date.now();
                 playerMovedEventsReceived.add(1);
                 console.log(`[VU ${__VU}] PlayerMoved 이벤트 수신: `, event);
+
+                const senderSessionId = event.playerId;
+                let expectedSeq = (lastReceivedSequenceNumbers[senderSessionId] || 0) + 1
+                if(event.seq !== expectedSeq){
+                    wsMessageSequenceErrors.add(1);
+                    console.warn(`[VU ${__VU}] 순서 오류! 유저:${senderSessionId} (예상:${expectedSeq}, 수신:${event.seq})`);
+                }else{
+                    const latency = receiveTime - event.timestamp;
+                    wsMessageLatency.add(latency);
+
+                    console.log(`[VU ${__VU}] 유저(${senderSessionId}) 메시지 순서:${event.seq}, latency:${latency}ms`);
+                }
+                lastReceivedSequenceNumbers[senderSessionId] = event.seq;
             }
         } catch (error) {
             wsMessageParseErrors.add(1);
@@ -155,17 +182,15 @@ export default function () {
         }
     };
 
-
     ws.onerror = (e) => {
         wsErrors.add(1);
-        console.error(`[VU ${__VU}] Error:`, e.error);
-    }
+        console.error(`[VU ${__VU}] WebSocket 에러 발생`, e);
+    };
 
-    setTimeout(() => {
-        ws.close();
-    }, __ENV.TEST_DURATION || 300000);
-
-    sleep(1);
+    ws.onclose = () => {
+        console.log(`[VU ${__VU}] WebSocket 연결 종료`);
+        clearInterval(interval);
+    };
 }
 
 // 헬퍼 함수들
