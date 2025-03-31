@@ -1,6 +1,7 @@
 package game.server.game.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.KafkaEvent
 import com.game.dto.v1.maching.Matched
 import com.game.dto.v1.move.PlayerMoved
@@ -17,7 +18,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Duration
 
-@Import(ObjectMapper::class)
+@Import(ObjectConfig::class)
 @Controller
 class KafkaEventController(
     private val objectMapper: ObjectMapper,
