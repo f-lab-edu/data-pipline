@@ -7,6 +7,7 @@ import com.game.dto.v1.move.PlayerMoved
 import game.server.game.service.MatchedEventService
 import game.server.game.service.PlayerMovedEventService
 import kotlinx.coroutines.reactor.mono
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketMessage
@@ -22,16 +23,20 @@ class KafkaEventController(
     private val playerMovedEventService: PlayerMovedEventService,
 ) : WebSocketHandler {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     override fun handle(socket: WebSocketSession): Mono<Void> =
         socket.receive()
             .map(WebSocketMessage::getPayloadAsText)
             .flatMap { payload ->
                 val event = objectMapper.readValue(payload, KafkaEvent::class.java)
+                logger.info("kafkaEventCOntroller ========{}", event)
                 mono { dispatchEvent(event) }.then()
             }.then()
 
 
     private suspend fun dispatchEvent(event: KafkaEvent) {
+        logger.info("================================kafkaEventCOntroller ========{}", event)
         when (event) {
             is Matched -> matchedEventService.processMatchedEvent(event)
             is PlayerMoved -> playerMovedEventService.processPlayerMovedEvent(event)
