@@ -50,10 +50,10 @@ data-pipeline/
 │       │   └─ config/              // Redis 연결 및 세션 관리 설정
 │       └─   // MySQL Repository, DataSource 설정 등
 │       
-└─ consumer/                         // 신규 독립적 Kafka consumer 모듈
+└─ consumer/                         //Kafka consumer 모듈
     ├─ build.gradle                  
     └─ com.game/
         └─ kafka/
-            ├─ config/              // Kafka consumer 설정
+            └─ config/              // Kafka consumer 설정
 
 ```
