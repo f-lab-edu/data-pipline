@@ -32,19 +32,14 @@ class PlayerMoveHandler(
     private val movePublisher: MatchEventPublisher,
 ) : RequestHandler<PlayerMoveRequestData, MoveResponseData> {
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     override val requestTypeReference: TypeReference<Request<PlayerMoveRequestData>> =
         object : TypeReference<Request<PlayerMoveRequestData>>() {}
 
     override fun handle(request: Request<PlayerMoveRequestData>, socket: WebSocketSession): ApiResponse<MoveResponseData> {
-        logger.info("{}", request)
         val player = playerManager.getPlayer(socket)
             ?: return ErrorResponse(type = "move", message = "Player not found")
-        logger.info("{}", request.data)
         val (currentX, currentY) = request.data.currentPosition
         val (newX, newY) = calculateNewPosition(currentX, currentY, request.data.direction, request.data.speed)
-        logger.info("{}", request.data.seq)
         return if (player.isMoveAllowed(newX, newY)) {
             player.position = Position(newX, newY)
 

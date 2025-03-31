@@ -19,10 +19,7 @@ class PlayerMovedEventService(
     private val playerManager: PlayerManager
 ) {
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     suspend fun processPlayerMovedEvent(event: PlayerMoved) = coroutineScope {
-        logger.info("=========================playerMovedEventService $event")
         val message = objectMapper.writeValueAsString(event)
 
         event.receivers.mapNotNull { sessionKey ->
