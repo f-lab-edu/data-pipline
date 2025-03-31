@@ -5,6 +5,8 @@ import game.server.game.domain.vo.Direction
 
 data class PlayerMoveRequestData(
     val seq: Int,
+    val senderSessionId: String,
+    val timestamp: Long,
     val currentPosition: Position,
     val direction: Direction,
     val speed: Int

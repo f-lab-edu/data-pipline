@@ -47,7 +47,8 @@ class PlayerMoveHandler(
                 movePublisher.publishPlayerMovement(
                     PlayerMoved(
                         seq = request.data.seq,
-                        playerId = player.sessionId,
+                        timestamp = request.data.timestamp,
+                        playerId = request.data.senderSessionId,
                         matchId = player.matchId,
                         newPositionX = newX,
                         newPositionY = newY,

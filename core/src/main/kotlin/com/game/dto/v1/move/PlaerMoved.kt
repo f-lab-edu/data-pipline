@@ -10,6 +10,6 @@ data class PlayerMoved(
     val newPositionX: Int,
     val newPositionY: Int,
     val receivers: List<String>,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long
 ) : KafkaEvent
 
