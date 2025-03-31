@@ -8,6 +8,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
@@ -18,7 +19,10 @@ class PlayerMovedEventService(
     private val playerManager: PlayerManager
 ) {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     suspend fun processPlayerMovedEvent(event: PlayerMoved) = coroutineScope {
+        logger.info("=========================playerMovedEventService $event")
         val message = objectMapper.writeValueAsString(event)
 
         event.receivers.mapNotNull { sessionKey ->
