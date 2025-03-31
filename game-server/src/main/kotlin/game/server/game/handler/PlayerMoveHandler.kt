@@ -46,6 +46,7 @@ class PlayerMoveHandler(
             CoroutineScope(Dispatchers.IO).launch {
                 movePublisher.publishPlayerMovement(
                     PlayerMoved(
+                        seq = request.data.seq,
                         playerId = player.sessionId,
                         matchId = player.matchId,
                         newPositionX = newX,
