@@ -18,8 +18,6 @@ class KafkaMovedEventConsumer(
     private val webSocketConnectionManager: WebSocketConnectionManager,
 ) {
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @KafkaListener(
         topics = ["\${kafka.topic.player-move}"],
         groupId = "\${kafka.group.player-move-group}",
@@ -34,8 +32,6 @@ class KafkaMovedEventConsumer(
     private suspend fun consumePlayerMovedEvent(playerMoved: PlayerMoved) {
         val userSessions = redisSessionManagement.findBySessionId(playerMoved.receivers)
 
-        println("================playerMoved==================: $playerMoved")
-        logger.info("Received playerMoved event: $playerMoved")
         val sessionsGroupedByServer = userSessions.groupBy { session ->
             "${session.serverIp}:${session.serverPort}"
         }

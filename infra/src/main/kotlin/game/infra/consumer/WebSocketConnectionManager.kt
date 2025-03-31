@@ -24,11 +24,8 @@ class WebSocketConnectionManager(
     private val objectMapper: ObjectMapper
 ) {
     private val connectionMonos = ConcurrentHashMap<URI, Mono<WebSocketSession>>()
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     suspend fun send(uri: URI, event: KafkaEvent) {
-        println("Sending event to websocket: $event")
-        logger.info("================================event: $event")
         val session = getSession(uri)
         session.send(Mono.just(session.textMessage(serialize(event)))).awaitSingleOrNull()
     }
