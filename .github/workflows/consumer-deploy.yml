@@ -26,7 +26,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build Consumer Module (Spring Boot Jar)
-        run: ./gradlew :consumer:clean :consumer:build
+        run: ./gradlew :consumer:clean :consumer:build :infra:build
 
       - name: login to docker hub
         uses: docker/login-action@v3
