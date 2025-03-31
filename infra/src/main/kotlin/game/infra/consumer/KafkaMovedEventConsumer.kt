@@ -6,6 +6,7 @@ import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.KafkaListener
@@ -19,6 +20,8 @@ class KafkaMovedEventConsumer(
     private val redisSessionManagement: SessionManagement,
     private val webSocketConnectionManager: WebSocketConnectionManager,
 ) {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @KafkaListener(
         topics = ["\${kafka.topic.player-move}"],
@@ -34,6 +37,7 @@ class KafkaMovedEventConsumer(
     private suspend fun consumePlayerMovedEvent(playerMoved: PlayerMoved) {
         val userSessions = redisSessionManagement.findBySessionId(playerMoved.receivers)
 
+        logger.info("================playerMoved==================: $playerMoved")
         val sessionsGroupedByServer = userSessions.groupBy { session ->
             "${session.serverIp}:${session.serverPort}"
         }

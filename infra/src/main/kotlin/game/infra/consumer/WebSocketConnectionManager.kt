@@ -5,6 +5,7 @@ import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.KafkaEvent
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -23,8 +24,10 @@ class WebSocketConnectionManager(
     private val objectMapper: ObjectMapper
 ) {
     private val connectionMonos = ConcurrentHashMap<URI, Mono<WebSocketSession>>()
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     suspend fun send(uri: URI, event: KafkaEvent) {
+        logger.info("Sending event to websocket: $event")
         val session = getSession(uri)
         session.send(Mono.just(session.textMessage(serialize(event)))).awaitSingleOrNull()
     }
