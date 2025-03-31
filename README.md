@@ -21,45 +21,34 @@ https://github.com/user-attachments/assets/791b4af4-bdf4-4631-8dbc-754004d2a9db
 data-pipeline/
 ├─ settings.gradle                   // 멀티 모듈 설정 (core, game-server, infra 포함)
 ├─ build.gradle                      // 루트 공통 빌드 설정
-├─ core/                             // 공통 도메인, DTO, 유틸리티 등을 위한 모듈
+├─ core/                             // 공통 도메인, DTO, 유틸리티 모듈
 │   ├─ build.gradle                  // core 모듈 의존성 및 설정
-│   └─ src/
-│       └─ main/
-│           ├─ java/
-│           │   └─ com/game/
-│           │       ├─ domain/         // 도메인 클래스, 비즈니스 엔티티 정의
-│           │       ├─ dto/            // 데이터 전달 객체 (DTO, VO)
-│           │       └─ util/           // 공통 유틸리티 클래스
-│           └─ resources/            // 공통 리소스 (필요시)
+│   └─ com/game/             
+│       ├─ domain/                  // 도메인 클래스, 비즈니스 엔티티 정의
+│       ├─ dto/                     // 데이터 전달 객체 (DTO, VO)
+│       └─ util/                    // 공통 유틸리티 클래스
+│   
 ├─ game-server/                      // 게임 서비스 모듈 (비즈니스 로직 중심)
 │   ├─ build.gradle                  
-│   └─ src/
-│       └─ main/
-│           ├─ java/
-│           │   └─ game/server/
-│           │       ├─ lobby/
-│           │       │   ├─ config/     // 로비 설정 (core, infra 모듈 활용)
-│           │       │   ├─ controller/ // REST/WebFlux API (예: 로그인, 매치 신청 등)
-│           │       │   └─ service/    // 로비 비즈니스 로직
-│           │       └─ game/
-│           │           ├─ config/     // 게임 관련 설정
-│           │           ├─ controller/ // 게임 진행 관련 API
-│           │           └─ service/    // 게임 비즈니스 로직
-│           └─ resources/
-│               └─ application.yml   // 게임 서버 관련 설정
+│   └─ game/server/             
+│       ├─ lobby/                   
+│       │   ├─ config/              // 로비 설정 (core, infra 모듈 활용)
+│       │   ├─ controller/          // REST/WebFlux API (예: 로그인, 매치 신청 등)
+│       │   └─ service/             // 로비 비즈니스 로직
+│       └─ game/                    
+│           ├─ config/              // 게임 관련 설정
+│           ├─ controller/          // 게임 진행 관련 API
+│           └─ service/             // 게임 비즈니스 로직
+│   
 └─ infra/                            // 인프라 전용 모듈 (Kafka, Redis, MySQL 연동)
     ├─ build.gradle                  
-    └─ src/
-        └─ main/
-            ├─ java/
-            │   └─ game/infra/
-            │       ├─ kafka/
-            │       │   ├─ config/     // Kafka 설정 (프로듀서, 컨슈머 등)
-            │       │   ├─ producer/   // 메시지 발행 로직
-            │       │   └─ consumer/   // 메시지 처리 로직
-            │       ├─ redis/
-            │       │   └─ config/     // Redis 연결 및 세션 관리 설정
-            │       └─ mysql/
-            │           └─ config/     // MySQL Repository, DataSource 설정 등
-            └─ resources/
+    └─ game.infra            
+        ├─ kafka/                   
+        │   ├─ config/              // Kafka 설정 (프로듀서, 컨슈머 등)
+        │   ├─ producer/            // 메시지 발행 로직
+        │   └─ consumer/            // 메시지 처리 로직
+        ├─ redis/                   
+        │   └─ config/              // Redis 연결 및 세션 관리 설정
+        └─   // MySQL Repository, DataSource 설정 등
+
 ```
