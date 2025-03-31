@@ -27,7 +27,7 @@ class WebSocketConnectionManager(
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     suspend fun send(uri: URI, event: KafkaEvent) {
-        logger.info("Sending event to websocket: $event")
+        println("Sending event to websocket: $event")
         val session = getSession(uri)
         session.send(Mono.just(session.textMessage(serialize(event)))).awaitSingleOrNull()
     }

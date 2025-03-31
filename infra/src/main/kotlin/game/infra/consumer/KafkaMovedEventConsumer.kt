@@ -37,7 +37,7 @@ class KafkaMovedEventConsumer(
     private suspend fun consumePlayerMovedEvent(playerMoved: PlayerMoved) {
         val userSessions = redisSessionManagement.findBySessionId(playerMoved.receivers)
 
-        logger.info("================playerMoved==================: $playerMoved")
+        println("================playerMoved==================: $playerMoved")
         val sessionsGroupedByServer = userSessions.groupBy { session ->
             "${session.serverIp}:${session.serverPort}"
         }
