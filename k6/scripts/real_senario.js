@@ -17,21 +17,6 @@ const wsMessageSequenceErrors = new Counter('ws_message_sequence_errors');
 
 
 export const options = {
-    // scenarios: {
-    //     websocket_200_users_test: {
-    //         executor: 'ramping-vus',
-    //         startVUs: 10,
-    //         stages: [
-    //             {target: 50, duration: '2m'},
-    //             {target: 100, duration: '3m'},
-    //             {target: 150, duration: '3m'},
-    //             {target: 200, duration: '4m'},
-    //             {target: 200, duration: '5m'},
-    //             {target: 0, duration: '3m'},
-    //         ],
-    //         gracefulRampDown: '30s',
-    //     },
-    // },
     scenarios: {
         websocket_200_users_test: {
             executor: 'ramping-vus',
@@ -129,7 +114,7 @@ export default function () {
         wsConnectDuration.add(connectDuration);
         console.log(`[VU ${__VU}] WebSocket 연결 성공, 연결 시간: ${connectDuration}ms`);
 
-        const fpsInterval = 1000 / 60;
+        const fpsInterval = 1000 / 20;
         interval = setInterval(() => {
             if (ws.readyState !== WS_STATE.OPEN) {
                 console.warn(`[VU ${__VU}] 🚨 WebSocket이 열리지 않음(${ws.readyState}), interval 정지`);
