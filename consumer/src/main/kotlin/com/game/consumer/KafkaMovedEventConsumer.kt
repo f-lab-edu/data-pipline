@@ -1,17 +1,14 @@
-package game.infra.consumer
+package com.game.consumer
 
 import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.net.URI
 
-@Profile("consumer-local | consumer-prod")
 @Component
 class KafkaMovedEventConsumer(
     private val redisSessionManagement: SessionManagement,

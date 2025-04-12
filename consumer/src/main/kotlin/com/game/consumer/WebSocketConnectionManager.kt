@@ -1,11 +1,10 @@
-package game.infra.consumer
+package com.game.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.KafkaEvent
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component

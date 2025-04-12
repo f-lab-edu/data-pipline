@@ -1,7 +1,6 @@
-package game.infra.config
+package com.game.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.KafkaEvent
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
@@ -17,7 +15,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 import org.springframework.kafka.support.serializer.JsonDeserializer
 
-@Profile("consumer-local | consumer-prod")
 @Configuration
 @EnableKafka
 @Import(ObjectConfig::class)
