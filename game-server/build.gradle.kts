@@ -28,10 +28,8 @@ dependencies {
     // database
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 
-    // aop
-    implementation("org.springframework.boot:spring-boot-starter-aop")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage")
     }
+    testImplementation(project(":core"))
 }

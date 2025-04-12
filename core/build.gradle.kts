@@ -16,4 +16,7 @@ dependencies {
 
     // 코루틴과 Reactor 연동
     api("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.8.0")
+
+    // aop
+    api("org.springframework.boot:spring-boot-starter-aop")
 }
