@@ -109,7 +109,7 @@ function interpolate(current, target, deltaTime, speed = 10) {
 
 function sendPlayerMoveRequest(direction) {
     const payload = {
-        type: "move", data: {
+        type: "MOVE", data: {
             currentPosition: {x: player.x, y: player.y}, direction: direction, speed: 5
         }
     };

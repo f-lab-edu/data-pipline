@@ -1,6 +1,5 @@
 package game.server.lobby.controller.v1
 
-import game.server.lobby.config.TestSecurityConfig
 import com.game.dto.v1.maching.MatchType
 import com.game.dto.v1.maching.Matched
 import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
@@ -11,13 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.mockito.BDDMockito.given
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @WebFluxTest(SoloMatchingControllerV1::class)
 @ActiveProfiles("test")
-@Import(TestSecurityConfig::class)
 class SoloMatchingControllerV1Test {
 
     @Autowired

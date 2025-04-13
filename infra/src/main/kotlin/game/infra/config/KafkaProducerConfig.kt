@@ -1,7 +1,6 @@
 package game.infra.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.Matched
 import com.game.dto.v1.move.PlayerMoved
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -9,13 +8,11 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.kafka.support.serializer.JsonSerializer
 import reactor.kafka.sender.SenderOptions
 
 @Configuration
-@Import(ObjectConfig::class)
 open class KafkaProducerConfig(
     private val objectMapper: ObjectMapper,
     @Value("\${kafka.ip}") private val kafkaIp: String,

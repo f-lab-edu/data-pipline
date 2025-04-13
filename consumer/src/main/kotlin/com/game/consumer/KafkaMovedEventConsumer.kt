@@ -1,33 +1,41 @@
-package game.infra.consumer
+package com.game.consumer
 
-import com.game.config.ObjectConfig
 import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
+import com.game.util.coroutine.WebSocketSessionContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Profile
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.net.URI
 
-@Profile("consumer-local | consumer-prod")
 @Component
-@Import(ObjectConfig::class)
 class KafkaMovedEventConsumer(
     private val redisSessionManagement: SessionManagement,
     private val webSocketConnectionManager: WebSocketConnectionManager,
 ) {
 
+    private val coroutineContext = WebSocketSessionContext()
+    private val eventChannel = Channel<PlayerMoved>(Channel.UNLIMITED)
+
+    init {
+        coroutineContext.launch {
+            for (event in eventChannel) {
+                consumePlayerMovedEvent(event)
+            }
+        }
+    }
+
     @KafkaListener(
         topics = ["\${kafka.topic.player-move}"],
         groupId = "\${kafka.group.player-move-group}",
-        containerFactory = "movedKafkaListenerContainerFactory"
+        containerFactory = "kafkaEventListenerContainerFactory"
     )
     fun listen(playerMoved: PlayerMoved) {
-        CoroutineScope(Dispatchers.IO).launch {
-            consumePlayerMovedEvent(playerMoved)
+        coroutineContext.launch {
+            eventChannel.send(playerMoved)
         }
     }
 

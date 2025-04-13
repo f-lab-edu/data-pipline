@@ -16,4 +16,7 @@ tasks.register<BootRun>("bootRunConsumer") {
 dependencies {
     implementation(project(":core"))
     runtimeOnly(project(":infra"))
+
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.projectreactor.kafka:reactor-kafka:1.3.22")
 }
