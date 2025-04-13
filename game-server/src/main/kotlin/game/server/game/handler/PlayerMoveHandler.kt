@@ -38,7 +38,7 @@ class PlayerMoveHandler(
 
         return if (player.isMoveAllowed(newPosition.x, newPosition.y)) {
             player.position = newPosition
-            publishMovement(player, newPosition)
+            publishMovement(player, newPosition, request)
             Response(type = "move", data = MoveResponseData(newPosition))
         } else {
             ErrorResponse(type = "move", message = "Move is not allowed")
@@ -56,17 +56,19 @@ class PlayerMoveHandler(
         RIGHT -> currentPosition.copy(x = currentPosition.x + speed)
     }
 
-    private suspend fun publishMovement(player: Player, newPosition: Position) {
+    private suspend fun publishMovement(player: Player, newPosition: Position, request: ApiRequest<PlayerMoveRequestData>) {
         val receivers = playerManager.getReceivers(player.matchId)
             .map { it.sessionId }
             .filter { it != player.sessionId }
 
         val moveEvent = PlayerMoved(
+            seq = request.data.seq,
             playerId = player.sessionId,
             matchId = player.matchId,
             newPositionX = newPosition.x,
             newPositionY = newPosition.y,
-            receivers = receivers
+            receivers = receivers,
+            timestamp = request.data.timestamp
         )
         movePublisher.publishPlayerMovement(moveEvent)
     }
