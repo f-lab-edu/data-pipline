@@ -18,7 +18,7 @@ class KafkaMatchedEventConsumer(
     @KafkaListener(
         topics = ["\${kafka.topic.match-start}"],
         groupId = "\${kafka.group.match-start-group}",
-        containerFactory = "kafkaEventListenerContainerFactory"
+        containerFactory = "matchedKafkaListenerContainerFactory"
         )
     fun listen(matched: Matched) {
         CoroutineScope(Dispatchers.IO).launch {
