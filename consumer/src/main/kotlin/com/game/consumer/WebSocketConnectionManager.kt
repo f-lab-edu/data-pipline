@@ -1,11 +1,9 @@
 package com.game.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.game.config.ObjectConfig
 import com.game.dto.v1.maching.KafkaEvent
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketSession
@@ -16,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 @Profile("consumer-local | consumer-prod")
-@Import(ObjectConfig::class)
 @Component
 class WebSocketConnectionManager(
     private val webSocketClient: ReactorNettyWebSocketClient,
