@@ -7,5 +7,5 @@ import org.springframework.web.reactive.socket.WebSocketSession
 
 interface RequestHandler<D, R> {
     val requestTypeReference: TypeReference<Request<D>>
-    fun handle(request: Request<D>, socket: WebSocketSession): ApiResponse<R>
+    suspend fun handle(request: Request<D>, socket: WebSocketSession): ApiResponse<R>
 }

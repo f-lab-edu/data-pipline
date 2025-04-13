@@ -14,7 +14,7 @@ class RequestService(
 
     private val logger = LoggerFactory.getLogger(RequestService::class.java)
 
-    fun routeRequest(payload: String, socket: WebSocketSession): ApiResponse<*> {
+    suspend fun routeRequest(payload: String, socket: WebSocketSession): ApiResponse<*> {
         val rootNode = objectMapper.readTree(payload)
         val type = rootNode["type"].asText() ?: throw IllegalArgumentException("Missing 'type'")
 
