@@ -8,8 +8,8 @@ import game.server.game.service.RequestHandler
 import game.server.game.domain.vo.Position
 import game.server.game.domain.vo.Direction
 import game.server.game.domain.vo.Direction.*
+import game.server.game.dto.v1.request.ApiRequest
 import game.server.game.dto.v1.request.PlayerMoveRequestData
-import game.server.game.dto.v1.request.Request
 import game.server.game.dto.v1.response.ApiResponse
 import game.server.game.dto.v1.response.ErrorResponse
 import game.server.game.dto.v1.response.MoveResponseData
@@ -21,16 +21,14 @@ import org.springframework.web.reactive.socket.WebSocketSession
 const val CANVAS_WIDTH = 800
 const val CANVAS_HEIGHT = 600
 
-@Component("move")
+@Component("MOVE")
 class PlayerMoveHandler(
     private val playerManager: PlayerManager,
     private val movePublisher: MatchEventPublisher,
 ) : RequestHandler<PlayerMoveRequestData, MoveResponseData> {
 
-    override val requestTypeReference = object : TypeReference<Request<PlayerMoveRequestData>>() {}
-
     override suspend fun handle(
-        request: Request<PlayerMoveRequestData>,
+        request: ApiRequest<PlayerMoveRequestData>,
         socket: WebSocketSession
     ): ApiResponse<MoveResponseData> {
         val player = playerManager.getPlayer(socket)
@@ -70,7 +68,6 @@ class PlayerMoveHandler(
             newPositionY = newPosition.y,
             receivers = receivers
         )
-
         movePublisher.publishPlayerMovement(moveEvent)
     }
 }
