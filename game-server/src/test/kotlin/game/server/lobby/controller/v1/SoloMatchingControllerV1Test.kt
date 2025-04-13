@@ -2,6 +2,7 @@ package game.server.lobby.controller.v1
 
 import com.game.dto.v1.maching.MatchType
 import com.game.dto.v1.maching.Matched
+import game.server.lobby.config.TestSecurityConfig
 import game.server.lobby.service.v1.matching.SoloMatchingServiceV1
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -11,10 +12,12 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.mockito.BDDMockito.given
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @WebFluxTest(SoloMatchingControllerV1::class)
 @ActiveProfiles("test")
+@ContextConfiguration(classes = [TestSecurityConfig::class])
 class SoloMatchingControllerV1Test {
 
     @Autowired
