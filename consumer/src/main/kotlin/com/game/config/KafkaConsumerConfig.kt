@@ -41,6 +41,9 @@ open class KafkaConsumerConfig(
     private fun <T> createKafkaListenerContainerFactory(type: Class<T>): ConcurrentKafkaListenerContainerFactory<String, T> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, T>()
         factory.consumerFactory = createConsumerFactory(type)
+        factory.setConcurrency(6)
+        factory.containerProperties.pollTimeout = 3000L
+
         return factory
     }
 
