@@ -18,8 +18,6 @@ class KafkaMatchedEventConsumer(
     private val coroutineContext = WebSocketSessionContext()
     private val eventChannel = Channel<Matched>(Channel.UNLIMITED)
 
-    private val logger = LoggerFactory.getLogger(KafkaMatchedEventConsumer::class.java)
-
     init {
         coroutineContext.launch {
             for (event in eventChannel) {
@@ -34,8 +32,6 @@ class KafkaMatchedEventConsumer(
         containerFactory = "matchedKafkaListenerContainerFactory"
         )
     fun listen(matched: Matched) {
-        logger.info("==============================")
-        logger.info("Received Matched event: {}", matched)
         coroutineContext.launch {
             eventChannel.send(matched)
         }

@@ -18,8 +18,6 @@ class KafkaMovedEventConsumer(
     private val coroutineContext = WebSocketSessionContext()
     private val eventChannel = Channel<PlayerMoved>(Channel.UNLIMITED)
 
-    private val logger = LoggerFactory.getLogger(KafkaMovedEventConsumer::class.java)
-
     init {
         coroutineContext.launch {
             for (event in eventChannel) {
@@ -34,8 +32,6 @@ class KafkaMovedEventConsumer(
         containerFactory = "playerMovedKafkaListenerContainerFactory"
     )
     fun listen(playerMoved: PlayerMoved) {
-        logger.info("==============================")
-        logger.info("Received PlayerMoved event: {}", playerMoved)
         coroutineContext.launch {
             eventChannel.send(playerMoved)
         }

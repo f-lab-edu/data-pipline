@@ -51,15 +51,13 @@ open class KafkaConsumerConfig(
         return factory
     }
 
-    // Matched 이벤트 Listener Container Factory
     @Bean
     open fun matchedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Matched> {
         return createKafkaListenerContainerFactory(Matched::class.java, concurrency = 1, pollTimeout = 1000L)
     }
 
-    // PlayerMoved 이벤트 Listener Container Factory
     @Bean
     open fun playerMovedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
-        return createKafkaListenerContainerFactory(PlayerMoved::class.java, concurrency = 1, pollTimeout = 1000L)
+        return createKafkaListenerContainerFactory(PlayerMoved::class.java, concurrency = 4, pollTimeout = 1000L)
     }
 }
