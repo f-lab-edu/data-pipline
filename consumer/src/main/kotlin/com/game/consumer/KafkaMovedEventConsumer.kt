@@ -4,6 +4,7 @@ import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
 import com.game.util.coroutine.WebSocketSessionContext
 import kotlinx.coroutines.channels.Channel
+import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.net.URI
@@ -16,6 +17,8 @@ class KafkaMovedEventConsumer(
 
     private val coroutineContext = WebSocketSessionContext()
     private val eventChannel = Channel<PlayerMoved>(Channel.UNLIMITED)
+
+    private val logger = LoggerFactory.getLogger(KafkaMovedEventConsumer::class.java)
 
     init {
         coroutineContext.launch {
@@ -31,6 +34,8 @@ class KafkaMovedEventConsumer(
         containerFactory = "playerMovedKafkaListenerContainerFactory"
     )
     fun listen(playerMoved: PlayerMoved) {
+        logger.info("==============================")
+        logger.info("Received PlayerMoved event: {}", playerMoved)
         coroutineContext.launch {
             eventChannel.send(playerMoved)
         }
