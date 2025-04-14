@@ -124,7 +124,7 @@ export default function () {
             sequenceNumber++;
             const {x, y} = generatePosition();
             const moveMessage = JSON.stringify({
-                type: "move",
+                type: "MOVE",
                 data: {
                     seq: sequenceNumber,
                     senderSessionId: sessionId,
