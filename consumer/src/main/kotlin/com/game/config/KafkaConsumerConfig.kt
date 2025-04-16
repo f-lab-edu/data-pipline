@@ -2,6 +2,8 @@ package com.game.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.game.dto.v1.maching.KafkaEvent
+import com.game.dto.v1.maching.Matched
+import com.game.dto.v1.move.PlayerMoved
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -39,17 +41,24 @@ open class KafkaConsumerConfig(
         return DefaultKafkaConsumerFactory(props, StringDeserializer(), jsonDeserializer)
     }
 
-    private fun <T> createKafkaListenerContainerFactory(type: Class<T>): ConcurrentKafkaListenerContainerFactory<String, T> {
+    private fun <T> createKafkaListenerContainerFactory(
+        type: Class<T>, concurrency: Int, pollTimeout: Long
+    ): ConcurrentKafkaListenerContainerFactory<String, T> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, T>()
         factory.consumerFactory = createConsumerFactory(type)
-        factory.setConcurrency(6)
-        factory.containerProperties.pollTimeout = 3000L
+        factory.setConcurrency(concurrency)
+        factory.containerProperties.pollTimeout = pollTimeout
 
         return factory
     }
 
     @Bean
-    open fun kafkaEventListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, KafkaEvent> {
-        return createKafkaListenerContainerFactory(KafkaEvent::class.java)
+    open fun matchedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Matched> {
+        return createKafkaListenerContainerFactory(Matched::class.java, concurrency = 1, pollTimeout = 1000L)
+    }
+
+    @Bean
+    open fun playerMovedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
+        return createKafkaListenerContainerFactory(PlayerMoved::class.java, concurrency = 4, pollTimeout = 1000L)
     }
 }

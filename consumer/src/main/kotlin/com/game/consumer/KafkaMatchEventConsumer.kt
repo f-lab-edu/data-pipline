@@ -2,9 +2,9 @@ package com.game.consumer
 
 import com.game.dto.v1.maching.Matched
 import com.game.service.v1.SessionManagement
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.game.util.coroutine.WebSocketSessionContext
+import kotlinx.coroutines.channels.Channel
+import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 import java.net.URI
@@ -15,14 +15,25 @@ class KafkaMatchedEventConsumer(
     private val webSocketConnectionManager: WebSocketConnectionManager
 ) {
 
+    private val coroutineContext = WebSocketSessionContext()
+    private val eventChannel = Channel<Matched>(Channel.UNLIMITED)
+
+    init {
+        coroutineContext.launch {
+            for (event in eventChannel) {
+                consumeMatchedEvent(event)
+            }
+        }
+    }
+
     @KafkaListener(
         topics = ["\${kafka.topic.match-start}"],
         groupId = "\${kafka.group.match-start-group}",
-        containerFactory = "kafkaEventListenerContainerFactory"
+        containerFactory = "matchedKafkaListenerContainerFactory"
         )
     fun listen(matched: Matched) {
-        CoroutineScope(Dispatchers.IO).launch {
-            consumeMatchedEvent(matched)
+        coroutineContext.launch {
+            eventChannel.send(matched)
         }
     }
 
