@@ -35,6 +35,11 @@ open class KafkaConsumerConfig(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
+            ConsumerConfig.FETCH_MIN_BYTES_CONFIG to 1,
+            ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG to 10,
+            ConsumerConfig.MAX_POLL_RECORDS_CONFIG to 10,
+            ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG to 5000,
+            ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG to 1500,
             ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java.name
         )
 
@@ -59,6 +64,6 @@ open class KafkaConsumerConfig(
 
     @Bean
     open fun playerMovedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, PlayerMoved> {
-        return createKafkaListenerContainerFactory(PlayerMoved::class.java, concurrency = 4, pollTimeout = 1000L)
+        return createKafkaListenerContainerFactory(PlayerMoved::class.java, concurrency = 4, pollTimeout = 200L)
     }
 }
