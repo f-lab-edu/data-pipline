@@ -39,15 +39,15 @@ open class KafkaProducerConfig(
         return mapOf(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
-            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to false,
-
-            ProducerConfig.RETRIES_CONFIG to 0,
-            ProducerConfig.BATCH_SIZE_CONFIG to 8192,
-            ProducerConfig.LINGER_MS_CONFIG to 2,
-            ProducerConfig.COMPRESSION_TYPE_CONFIG to "lz4",
-            ProducerConfig.ACKS_CONFIG to "0",
-            ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION to 10,
-            ProducerConfig.BUFFER_MEMORY_CONFIG to 67108864
+//            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to false,
+//
+//            ProducerConfig.RETRIES_CONFIG to 0,
+//            ProducerConfig.BATCH_SIZE_CONFIG to 8192,
+//            ProducerConfig.LINGER_MS_CONFIG to 2,
+//            ProducerConfig.COMPRESSION_TYPE_CONFIG to "lz4",
+//            ProducerConfig.ACKS_CONFIG to "0",
+//            ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION to 10,
+//            ProducerConfig.BUFFER_MEMORY_CONFIG to 67108864
         )
     }
 }
