@@ -12,6 +12,10 @@ import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.kafka.support.serializer.JsonSerializer
 import reactor.kafka.sender.SenderOptions
 
+
+private const val BATCH_SIZE = 512 * 1024 // 512KB
+private const val BUFFER_MEMORY = 1 * 1024 * 1024 * 1024 // 1GB
+
 @Configuration
 open class KafkaProducerConfig(
     private val objectMapper: ObjectMapper,
@@ -19,35 +23,44 @@ open class KafkaProducerConfig(
     @Value("\${kafka.port}") private val kafkaPort: String,
 ) {
 
-    @Bean
-    open fun reactiveKafkaProducerTemplate(): ReactiveKafkaProducerTemplate<String, Matched> {
-        val jsonSerializer = JsonSerializer<Matched>(objectMapper)
-        val senderOptions = SenderOptions.create<String, Matched>(producerProps())
-            .withValueSerializer(jsonSerializer)
-        return ReactiveKafkaProducerTemplate(senderOptions)
-    }
-
-    @Bean
-    open fun kafkaTemplatePlayerMoved(): ReactiveKafkaProducerTemplate<String, PlayerMoved> {
-        val jsonSerializer = JsonSerializer<PlayerMoved>(objectMapper)
-        val senderOptions = SenderOptions.create<String, PlayerMoved>(producerProps())
-            .withValueSerializer(jsonSerializer)
-        return ReactiveKafkaProducerTemplate(senderOptions)
-    }
-
-    private fun producerProps(): Map<String, Any> {
+    private fun commonProducerProps(): Map<String, Any> {
         return mapOf(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
-//            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to false,
-//
-//            ProducerConfig.RETRIES_CONFIG to 0,
-//            ProducerConfig.BATCH_SIZE_CONFIG to 8192,
-//            ProducerConfig.LINGER_MS_CONFIG to 2,
-//            ProducerConfig.COMPRESSION_TYPE_CONFIG to "lz4",
-//            ProducerConfig.ACKS_CONFIG to "0",
-//            ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION to 10,
-//            ProducerConfig.BUFFER_MEMORY_CONFIG to 67108864
         )
+    }
+
+    private fun producerPropsForTopic(customProps: Map<String, Any> = emptyMap()): Map<String, Any> {
+        val defaultProps = commonProducerProps()
+        return defaultProps + customProps
+    }
+
+    private fun <T> createTemplate(customProps: Map<String, Any>): ReactiveKafkaProducerTemplate<String, T> {
+        val jsonSerializer = JsonSerializer<T>(objectMapper)
+        val senderOptions = SenderOptions.create<String, T>(customProps)
+            .withValueSerializer(jsonSerializer)
+        return ReactiveKafkaProducerTemplate(senderOptions)
+    }
+
+    @Bean
+    open fun reactiveKafkaProducerTemplateForMatched(): ReactiveKafkaProducerTemplate<String, Matched> {
+        val matchedProps = producerPropsForTopic()
+        return createTemplate(matchedProps)
+    }
+
+    @Bean
+    open fun reactiveKafkaProducerTemplateForPlayerMoved(): ReactiveKafkaProducerTemplate<String, PlayerMoved> {
+        val playerMovedProps = producerPropsForTopic(
+            mapOf(
+                ProducerConfig.LINGER_MS_CONFIG to 5,
+                ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to false,
+                ProducerConfig.ACKS_CONFIG to "0",
+                ProducerConfig.RETRIES_CONFIG to 0,
+                ProducerConfig.BATCH_SIZE_CONFIG to BATCH_SIZE,
+                ProducerConfig.LINGER_MS_CONFIG to 5,
+                ProducerConfig.BUFFER_MEMORY_CONFIG to BUFFER_MEMORY,
+            )
+        )
+        return createTemplate(playerMovedProps)
     }
 }
