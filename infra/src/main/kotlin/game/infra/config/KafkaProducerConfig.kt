@@ -52,7 +52,6 @@ open class KafkaProducerConfig(
     open fun reactiveKafkaProducerTemplateForPlayerMoved(): ReactiveKafkaProducerTemplate<String, PlayerMoved> {
         val playerMovedProps = producerPropsForTopic(
             mapOf(
-                ProducerConfig.LINGER_MS_CONFIG to 5,
                 ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to false,
                 ProducerConfig.ACKS_CONFIG to "0",
                 ProducerConfig.RETRIES_CONFIG to 0,
