@@ -4,8 +4,8 @@ import com.game.dto.v1.move.PlayerMoved
 import com.game.service.v1.SessionManagement
 import com.game.util.coroutine.WebSocketSessionContext
 import kotlinx.coroutines.channels.Channel
-import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
 import org.springframework.stereotype.Component
 import java.net.URI
 
@@ -31,9 +31,10 @@ class KafkaMovedEventConsumer(
         groupId = "\${kafka.group.player-move-group}",
         containerFactory = "playerMovedKafkaListenerContainerFactory"
     )
-    fun listen(playerMoved: PlayerMoved) {
+    fun listen(playerMoved: PlayerMoved, acknowledgment: Acknowledgment) {
         coroutineContext.launch {
             eventChannel.send(playerMoved)
+            acknowledgment.acknowledge()
         }
     }
 
