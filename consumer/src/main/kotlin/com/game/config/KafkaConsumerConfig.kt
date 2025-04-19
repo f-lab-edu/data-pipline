@@ -31,7 +31,8 @@ open class KafkaConsumerConfig(
         return mapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "$kafkaIp:$kafkaPort",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to ErrorHandlingDeserializer::class.java,
+            ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to JsonDeserializer::class.java.name
         )
     }
 
@@ -46,9 +47,7 @@ open class KafkaConsumerConfig(
             setUseTypeHeaders(false)
         }
 
-        val props = consumerPropsForTopic(customProps) + mapOf(
-            ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS to jsonDeserializer::class.java.name
-        )
+        val props = consumerPropsForTopic(customProps)
         return DefaultKafkaConsumerFactory(props, StringDeserializer(), jsonDeserializer)
     }
 
