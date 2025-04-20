@@ -13,7 +13,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer
 import reactor.kafka.sender.SenderOptions
 
 
-private const val BATCH_SIZE = 72 * 1024 // 512KB
+private const val BATCH_SIZE = 512 * 1024 // 512KB
 private const val BUFFER_MEMORY = 1 * 1024 * 1024 * 1024 // 1GB
 
 @Configuration
